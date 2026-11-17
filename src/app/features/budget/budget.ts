@@ -33,7 +33,8 @@ export class Budget {
 
   protected readonly status = computed(() => this.data.status());
 
-  protected readonly mode = signal<DollarMode>('actual');
+  /** Inflation-adjusted by default; falls back to actual dollars if the CPI is unavailable. */
+  protected readonly mode = signal<DollarMode>('real');
 
   /** Budget restated in the latest year's dollars, or null if the CPI can't cover it. */
   private readonly realData = computed(() => {
@@ -47,6 +48,8 @@ export class Budget {
 
   protected readonly summary = computed(() => {
     if (!this.data.hasValue()) return undefined;
+    // Wait for the price index rather than flashing actual dollars first.
+    if (this.mode() === 'real' && this.cpi.isLoading()) return undefined;
     const real = this.mode() === 'real' ? this.realData() : null;
     return summarizeSpending(real ?? this.data.value());
   });
@@ -61,6 +64,22 @@ export class Budget {
     const from = v[String(s.firstYear)];
     const to = v[String(s.year)];
     return from && to ? to / from - 1 : null;
+  });
+
+  /** One-line explanation of the current dollar mode. */
+  protected readonly modeNote = computed(() => {
+    const s = this.summary();
+    if (!s) return '';
+    if (!this.isReal()) return 'Dollars as spent each year, not adjusted for inflation.';
+    const rise = this.priceRise();
+    const prices =
+      rise === null
+        ? ''
+        : ` (prices rose ${Math.round(rise * 100)}% from ${s.firstYear} to ${s.year})`;
+    return (
+      `Past years shown in ${s.year} dollars, using Statistics Canada's consumer price ` +
+      `index for Toronto${prices}.`
+    );
   });
 
   /** Ranked services with their colours; tiny ones folded into "Other". The table keeps them all. */

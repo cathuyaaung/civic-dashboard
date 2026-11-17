@@ -72,8 +72,10 @@ describe('Budget', () => {
 
     const names = [...el.querySelectorAll('ol .name')].map((n) => n.textContent?.trim());
     expect(names).toEqual(['Transportation', 'Protection', 'Other (health, social & family)']);
-    expect(el.querySelector('ol .change-money')?.textContent?.trim()).toBe('+$221M');
-    expect(el.querySelector('ol .change-pct')?.textContent?.trim()).toBe('+81%');
+    // Inflation-adjusted by default. Transportation: $274.6M in 2012 = $411.9M
+    // in 2025 dollars, so $496M is +$84M / +20%.
+    expect(el.querySelector('ol .change-money')?.textContent?.trim()).toBe('+$84M');
+    expect(el.querySelector('ol .change-pct')?.textContent?.trim()).toBe('+20%');
 
     // The full table still lists every category separately.
     const tableRows = [...el.querySelectorAll('tbody th')].map((t) => t.textContent?.trim());
@@ -95,7 +97,7 @@ describe('Budget', () => {
     expect(el.querySelectorAll('ol li.dim').length).toBe(2);
   });
 
-  it('restates past years in today’s dollars when adjusted for inflation', async () => {
+  it('defaults to inflation-adjusted and can switch to actual dollars', async () => {
     const el = await render((h) => {
       h.expectOne('data/budget.json').flush(data);
       h.expectOne('data/cpi.json').flush(cpi);
@@ -103,18 +105,21 @@ describe('Budget', () => {
     });
 
     const [actual, real] = el.querySelectorAll<HTMLButtonElement>('.segmented button');
-    expect(actual.getAttribute('aria-pressed')).toBe('true');
+    expect(real.getAttribute('aria-pressed')).toBe('true');
+    expect(el.querySelector('.mode-note')?.textContent).toContain(
+      '(prices rose 50% from 2012 to 2025).',
+    );
+    expect(el.querySelector('caption')?.textContent).toContain('2025 dollars');
 
-    real.click();
+    actual.click();
     await TestBed.inject(ApplicationRef).whenStable();
 
-    // Transportation: $274.6M in 2012 = $411.9M in 2025 dollars → $496M is +20%.
-    expect(el.querySelector('ol .change-pct')?.textContent?.trim()).toBe('+20%');
-    expect(el.querySelector('ol .change-money')?.textContent?.trim()).toBe('+$84M');
-    // 2025 itself is unchanged.
+    expect(actual.getAttribute('aria-pressed')).toBe('true');
+    expect(el.querySelector('ol .change-money')?.textContent?.trim()).toBe('+$221M');
+    expect(el.querySelector('ol .change-pct')?.textContent?.trim()).toBe('+81%');
+    // 2025 itself is the same in both modes.
     expect(el.querySelector('app-donut .c-value')?.textContent?.trim()).toBe('$693M');
-    expect(el.querySelector('.mode-note')?.textContent).toContain('prices rose +50%');
-    expect(el.querySelector('caption')?.textContent).toContain('2025 dollars');
+    expect(el.querySelector('caption')?.textContent).toContain('as spent');
   });
 
   it('hides the inflation switch when the price index is unavailable', async () => {

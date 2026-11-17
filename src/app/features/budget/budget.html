@@ -28,19 +28,7 @@
                 Adjusted for inflation
               </button>
             </div>
-            <p class="mode-note muted">
-              @if (isReal()) {
-                Past years shown in {{ s.year }} dollars, using Statistics Canada's consumer price
-                index for Toronto
-                @if (priceRise() !== null) {
-                  (prices rose {{ signedPercent(priceRise()) }} from {{ s.firstYear }} to
-                  {{ s.year }})
-                }
-                .
-              } @else {
-                Dollars as spent each year, not adjusted for inflation.
-              }
-            </p>
+            <p class="mode-note muted">{{ modeNote() }}</p>
           </div>
         }
 
