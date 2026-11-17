@@ -59,7 +59,7 @@ All of the open data below is served from the city's ArcGIS Online org (`service
 | Where my money goes | **Consolidated Statement of Operations – 2012 to 2025** (CSV, updated 2026-07-09) | `https://www.arcgis.com/sharing/rest/content/items/e86fa318eae44578a64de5507b6a4c1e/data` | ~35 rows, 7.5 KB. Revenues and expenses by function (General government, Protection, Transportation, Environmental, Health, Social & family, Recreation & cultural, Planning & development), **actuals and budgets for every year 2012–2025**, in $000s. Enough for v1's budget visual and year-over-year trends. |
 | Where my money goes (finer grain) | Approved Operating/Capital Budget appendices | Open data, CSV/Feature Service | Only **2016–2019**. Anything newer at service-area granularity (Fire, Library, etc.) is PDF-only. |
 | What's happening | **Growth Management – Active Development Applications** (updated 2026-09-11) | `.../Growth_Management_%E2%80%93_Active_Development_Applications/FeatureServer/0` | 214 points city-wide, has a `Ward` field — `where=Ward=11` returns 17. Includes application number, status, address, description, units, storeys, submission date. |
-| What's happening | **eSCRIBE meetings portal** (pub-mississauga.escribemeetings.com) | `POST /MeetingsCalendarView.aspx/GetCalendarMeetings` with `{"calendarStartDate":"YYYY-MM-DD","calendarEndDate":"YYYY-MM-DD"}` | Returns JSON: meeting name, date, location, cancelled flag, links to agenda PDF/HTML. This is the endpoint the portal's own calendar uses — undocumented, not an official API, so treat as best-effort and fail gracefully. |
+| What's happening | **eSCRIBE meetings portal** (pub-mississauga.escribemeetings.com) | `POST /MeetingsCalendarView.aspx/GetCalendarMeetings` with `{"calendarStartDate":"YYYY-MM-DD","calendarEndDate":"YYYY-MM-DD"}` | Returns JSON: meeting name, date, location, cancelled flag, links to agenda PDF/HTML. This is the endpoint the portal's own calendar uses — undocumented, not an official API, so treat as best-effort and fail gracefully. Its `Url` field 404s; the working meeting page is `/Meeting.aspx?Id=<id>&lang=English`, and it is an empty shell until an agenda is published (`HasAgenda`). |
 
 **Still open:**
 
@@ -87,7 +87,9 @@ Repo name settled: `civic-dashboard`. A friendlier project/display name is still
 2. ~~Confirm ward boundary data.~~ Done — GeoJSON via ArcGIS layer, Ward 11 present (see Confirmed data sources).
 3. ~~Find non-PDF budget data.~~ Done — Consolidated Statement of Operations CSV, 2012–2025, by function. Service-area detail beyond that is PDF-only after 2019.
 4. ~~Check for a council agenda feed.~~ Done — eSCRIBE JSON endpoint for meetings. By-laws still have no feed.
-5. Screen-by-screen spec for the ward-activity pillar (meetings, development applications), now that the data shapes are known.
+5. ~~Ward-activity screen.~~ Done — "What's happening" at `/activity`: Ward 11 development applications (newest first, plain-language type, map link) and upcoming meetings, defaulting to Council, General, Planning & Development and Budget committees with an "All meetings" toggle.
 6. ~~Data-pull script.~~ Done — `npm run data` (`scripts/fetch-data.mts`) writes wards, budget, development applications and meetings into `public/data/`.
 7. ~~First screen.~~ Done — "Who's deciding" councillor card at `/councillor`, read from `wards.geojson`. Committees aren't in any dataset yet.
 8. ~~Budget screen.~~ Done — "Where my money goes" at `/budget`: 2025 total, ranked bars by service with 2012–2025 sparklines and change, categories under 0.5% folded into "Other", full year-by-year table.
+9. Address → ward lookup (point-in-polygon against `wards.geojson`) — planned, not built.
+10. Open: by-laws (no feed found), committees the councillor sits on (not in any dataset), and what the city means by the "Withheld" application status.

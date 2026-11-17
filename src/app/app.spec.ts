@@ -27,6 +27,10 @@ describe('App', () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const links = [...(fixture.nativeElement as HTMLElement).querySelectorAll('nav a')];
-    expect(links.map((a) => a.getAttribute('href'))).toEqual(['/councillor', '/budget']);
+    expect(links.map((a) => a.getAttribute('href'))).toEqual([
+      '/councillor',
+      '/budget',
+      '/activity',
+    ]);
   });
 });

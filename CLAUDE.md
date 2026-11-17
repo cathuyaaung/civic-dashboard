@@ -47,13 +47,13 @@ a v1 requirement — resist scope creep back toward "the whole city."
 
 ## Current state
 
-Two of the three pillars have screens. See "Next steps" at
+All three pillars have screens; the address → ward lookup is not built yet. See "Next steps" at
 the bottom of `docs/design-notes.md` for what's actually queued next. Data
 sources for all three pillars were confirmed on 2026-11-17 (see "Confirmed
 data sources" in the design notes). `npm run data` (`scripts/fetch-data.mts`)
 pulls them into `public/data/`, which is committed; the app reads those files
 with `httpResource`, never the city's APIs directly. The "Who's deciding"
-screen and the "Where my money goes" budget screen exist; the ward-activity screen is next.
+screen, the "Where my money goes" budget screen and the "What's happening" activity screen exist.
 
 ## Working style notes
 

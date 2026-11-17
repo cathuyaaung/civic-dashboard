@@ -176,7 +176,11 @@ async function meetings(): Promise<Json> {
         start: String(m['StartDate']).replace(/\//g, '-').replace(' ', 'T'),
         location: (m['Location'] as string | null) || null,
         cancelled: /\bcancel/i.test(name),
-        url: abs(m['Url']),
+        // eSCRIBE's own Url field 404s, and a meeting page is an empty shell
+        // until its agenda is published, so only link meetings that have one.
+        url: m['HasAgenda']
+          ? `${ESCRIBE}/Meeting.aspx?Id=${encodeURIComponent(String(m['ID']))}&lang=English`
+          : null,
         agendaPdf: agenda('.pdf'),
         agendaHtml: agenda('HTML'),
       };

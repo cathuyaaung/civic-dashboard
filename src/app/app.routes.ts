@@ -12,5 +12,10 @@ export const routes: Routes = [
     title: 'Where my money goes · Ward 11',
     loadComponent: () => import('./features/budget/budget').then((m) => m.Budget),
   },
+  {
+    path: 'activity',
+    title: "What's happening · Ward 11",
+    loadComponent: () => import('./features/activity/activity').then((m) => m.Activity),
+  },
   { path: '**', redirectTo: '' },
 ];
