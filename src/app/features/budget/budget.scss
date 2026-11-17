@@ -1,0 +1,155 @@
+.hero {
+  margin-bottom: 2rem;
+
+  p {
+    margin: 0;
+  }
+}
+
+.hero-label {
+  color: var(--muted);
+}
+
+.hero-value {
+  font-size: 3rem;
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.ranked ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr) 120px 3.5rem;
+  grid-template-areas: 'name bar spark change';
+  align-items: center;
+  gap: 0.25rem 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+
+  &.head {
+    padding-bottom: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+}
+
+.name {
+  grid-area: name;
+}
+
+.bar-cell {
+  grid-area: bar;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+/* Bar length = share of the largest category; leave room for the value label. */
+.bar {
+  flex: none;
+  width: calc((100% - 8rem) * var(--fill));
+  min-width: 2px;
+  height: 20px;
+  border-radius: 0 4px 4px 0;
+  background: var(--accent);
+}
+
+.value {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.spark {
+  grid-area: spark;
+}
+
+.change {
+  grid-area: change;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+details {
+  margin-top: 1.5rem;
+
+  summary {
+    cursor: pointer;
+    color: var(--link);
+  }
+}
+
+.table-scroll {
+  overflow-x: auto;
+  margin-top: 0.75rem;
+}
+
+table {
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+
+  caption {
+    text-align: left;
+    color: var(--muted);
+    padding-bottom: 0.5rem;
+  }
+
+  th,
+  td {
+    padding: 0.25rem 0.5rem;
+    border-bottom: 1px solid var(--border);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  th[scope='row'],
+  thead th:first-child {
+    text-align: left;
+    position: sticky;
+    left: 0;
+    background: var(--bg);
+  }
+}
+
+.notes {
+  margin: 1.5rem 0 0;
+  padding-left: 1.25rem;
+  font-size: 0.875rem;
+}
+
+.source {
+  margin-top: 1.5rem;
+  font-size: 0.8125rem;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.error {
+  color: var(--error);
+}
+
+@media (max-width: 560px) {
+  .row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'name name'
+      'bar bar'
+      'spark change';
+
+    &.head {
+      display: none;
+    }
+  }
+
+  .hero-value {
+    font-size: 2.5rem;
+  }
+}

@@ -1,4 +1,14 @@
 <main class="shell">
-  <h1>Ward 11 Civic Dashboard</h1>
+  <header>
+    <h1>Ward 11 Civic Dashboard</h1>
+    <nav aria-label="Sections">
+      <a routerLink="/councillor" routerLinkActive="active" ariaCurrentWhenActive="page">
+        Who's deciding
+      </a>
+      <a routerLink="/budget" routerLinkActive="active" ariaCurrentWhenActive="page">
+        Where my money goes
+      </a>
+    </nav>
+  </header>
   <router-outlet />
 </main>

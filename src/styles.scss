@@ -7,6 +7,8 @@
   --border: #e2e2de;
   --link: #0b57d0;
   --error: #b3261e;
+  /* Single-series data colour; validated >= 3:1 on both surfaces. */
+  --accent: #2a78d6;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -18,6 +20,7 @@
     --border: #333333;
     --link: #8ab4f8;
     --error: #f2b8b5;
+    --accent: #3987e5;
   }
 }
 

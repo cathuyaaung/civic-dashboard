@@ -1,0 +1,111 @@
+<section aria-labelledby="budget-heading">
+  <h2 id="budget-heading">Where my money goes</h2>
+
+  @switch (status()) {
+    @case ('loading') {
+      <p class="muted">Loading budget data…</p>
+    }
+    @case ('error') {
+      <p class="error">Couldn't load budget data. Run <code>npm run data</code> to fetch it.</p>
+    }
+    @default {
+      @if (summary(); as s) {
+        <div class="hero">
+          <p class="hero-label">City of Mississauga spending in {{ s.year }}</p>
+          <p class="hero-value">{{ money(s.total) }}</p>
+          <p class="muted">
+            {{ signedPercent(s.totalChange) }} since {{ s.firstYear }}, not adjusted for inflation
+          </p>
+        </div>
+
+        <div class="ranked">
+          <div class="row head" aria-hidden="true">
+            <span class="name">Service</span>
+            <span class="bar-cell">{{ s.year }} spending</span>
+            <span class="spark">Trend {{ s.firstYear }}–{{ s.year }}</span>
+            <span class="change">Change</span>
+          </div>
+          <ol [attr.aria-label]="'Spending by service, ' + s.year">
+            @for (c of ranked(); track c.line) {
+              <li class="row">
+                <span class="name">{{ c.label }}</span>
+                <span class="bar-cell">
+                  <span class="bar" [style.--fill]="c.share / maxShare()" aria-hidden="true"></span>
+                  <span class="value">
+                    {{ money(c.amount) }} <span class="muted">· {{ share(c.share) }}</span>
+                  </span>
+                </span>
+                <app-sparkline
+                  class="spark"
+                  [values]="c.series"
+                  [labels]="s.years"
+                  [format]="money"
+                  [ariaLabel]="
+                    c.label +
+                    ' spending ' +
+                    s.firstYear +
+                    ' to ' +
+                    s.year +
+                    ', change ' +
+                    signedPercent(c.change)
+                  "
+                />
+                <span class="change">{{ signedPercent(c.change) }}</span>
+              </li>
+            }
+          </ol>
+        </div>
+
+        <details>
+          <summary>Every year, by service</summary>
+          <div class="table-scroll">
+            <table>
+              <caption>
+                Actual spending, millions of dollars
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Service</th>
+                  @for (y of s.years; track y) {
+                    <th scope="col">{{ y }}</th>
+                  }
+                </tr>
+              </thead>
+              <tbody>
+                @for (c of s.categories; track c.line) {
+                  <tr>
+                    <th scope="row">{{ c.label }}</th>
+                    @for (v of c.series; track $index) {
+                      <td>{{ v === null ? '–' : (v / 1e6).toFixed(1) }}</td>
+                    }
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </details>
+
+        <ul class="notes muted">
+          <li>
+            Actual spending on all City services from every funding source (property tax, transit
+            fares, user fees, grants), not just property tax.
+          </li>
+          <li>
+            Your property tax bill also pays the Region of Peel (including police) and school
+            boards. That spending isn't shown here.
+          </li>
+        </ul>
+      }
+    }
+  }
+
+  <p class="source muted">
+    Source:
+    <a href="https://data.mississauga.ca" target="_blank" rel="noopener"
+      >City of Mississauga Open Data</a
+    >, Consolidated Statement of Operations 2012–2025
+    @if (fetchedAt(); as at) {
+      · fetched {{ at | date: 'mediumDate' }}
+    }
+  </p>
+</section>
