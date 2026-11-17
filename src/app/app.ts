@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { ThemeToggle } from './shared/theme-toggle';
 
 @Component({
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, ThemeToggle],
   selector: 'app-root',
   styleUrl: './app.scss',
   templateUrl: './app.html',

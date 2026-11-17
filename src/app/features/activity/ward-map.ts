@@ -129,8 +129,12 @@ export function markerRadius(homes: number, maxHomes: number): number {
     .wm-map .leaflet-tile-pane {
       filter: grayscale(0.85) contrast(0.9) brightness(1.04);
     }
+    /* Dark theme: same rule as the colour tokens in styles.scss. */
+    :root[data-theme='dark'] .wm-map .leaflet-tile-pane {
+      filter: grayscale(1) invert(1) brightness(0.85) contrast(0.85);
+    }
     @media (prefers-color-scheme: dark) {
-      .wm-map .leaflet-tile-pane {
+      :root:not([data-theme='light']) .wm-map .leaflet-tile-pane {
         filter: grayscale(1) invert(1) brightness(0.85) contrast(0.85);
       }
     }
