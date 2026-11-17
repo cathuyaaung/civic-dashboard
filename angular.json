@@ -6,7 +6,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "civic-dashboard-tmp": {
+    "civic-dashboard": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -59,10 +59,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "civic-dashboard-tmp:build:production"
+              "buildTarget": "civic-dashboard:build:production"
             },
             "development": {
-              "buildTarget": "civic-dashboard-tmp:build:development"
+              "buildTarget": "civic-dashboard:build:development"
             }
           },
           "defaultConfiguration": "development"
