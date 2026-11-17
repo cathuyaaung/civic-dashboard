@@ -49,7 +49,24 @@ This address/ward/roll-number lookup is also the first real technical problem th
 | [mississauga.ca/apps/#/property](https://mississauga.ca/apps/#/property) | Per-property ward, councillor, zoning, development/permit history | Interactive web app (not a public API found yet) | Live |
 | Council/committee agendas and by-laws | Upcoming votes, recent by-laws | Published on mississauga.ca, format TBD | Continuous |
 
-**Open question:** whether the property-lookup tool and the council agenda/by-law pages expose a public API or only an interactive web UI — needs checking before deciding how v1 pulls this data (API call vs. scraping a published page vs. manual periodic download).
+### Confirmed data sources (checked 2026-11-17)
+
+All of the open data below is served from the city's ArcGIS Online org (`services6.arcgis.com/hM5ymMLbxIyWTjn2`), which is what data.mississauga.ca is built on. Every layer supports `query?...&f=geojson`, so no shapefile conversion is needed.
+
+| Pillar | Dataset | Endpoint | Notes |
+| --- | --- | --- | --- |
+| Who's deciding | **Ward Boundaries** (updated 2026-11-16) | `.../Ward_Boundaries/FeatureServer/2` (note: layer **2**, not 0) | 11 polygons, ~300 KB as GeoJSON. Attributes include `WARD`, `COUNCILLOR`, `PHONE`, `URL`, `IMAGE_URL` — Ward 11 = Brad Butt, 905-896-5011. Covers both the address → ward lookup and the basic councillor card. |
+| Where my money goes | **Consolidated Statement of Operations – 2012 to 2025** (CSV, updated 2026-07-09) | `https://www.arcgis.com/sharing/rest/content/items/e86fa318eae44578a64de5507b6a4c1e/data` | ~35 rows, 7.5 KB. Revenues and expenses by function (General government, Protection, Transportation, Environmental, Health, Social & family, Recreation & cultural, Planning & development), **actuals and budgets for every year 2012–2025**, in $000s. Enough for v1's budget visual and year-over-year trends. |
+| Where my money goes (finer grain) | Approved Operating/Capital Budget appendices | Open data, CSV/Feature Service | Only **2016–2019**. Anything newer at service-area granularity (Fire, Library, etc.) is PDF-only. |
+| What's happening | **Growth Management – Active Development Applications** (updated 2026-09-11) | `.../Growth_Management_%E2%80%93_Active_Development_Applications/FeatureServer/0` | 214 points city-wide, has a `Ward` field — `where=Ward=11` returns 17. Includes application number, status, address, description, units, storeys, submission date. |
+| What's happening | **eSCRIBE meetings portal** (pub-mississauga.escribemeetings.com) | `POST /MeetingsCalendarView.aspx/GetCalendarMeetings` with `{"calendarStartDate":"YYYY-MM-DD","calendarEndDate":"YYYY-MM-DD"}` | Returns JSON: meeting name, date, location, cancelled flag, links to agenda PDF/HTML. This is the endpoint the portal's own calendar uses — undocumented, not an official API, so treat as best-effort and fail gracefully. |
+
+**Still open:**
+
+- **By-laws:** no feed or dataset found. By-laws are enacted at Council meetings, so the Council agenda/minutes from eSCRIBE may be the practical source; otherwise the mississauga.ca by-laws page would have to be scraped. Decide during the ward-activity screen spec.
+- **Agenda items per ward:** eSCRIBE gives meetings and agenda documents, not ward-tagged items. Filtering to "Ward 11 items" would mean parsing agenda HTML for ward mentions — keep v1 to a list of upcoming meetings with agenda links.
+- **Address → ward test:** not yet verified against the anchor address; do this locally in the point-in-polygon code rather than sending the address to an external geocoder.
+- **Property-lookup tool:** no public API found; not needed for v1 given the datasets above.
 
 ## Tech approach
 
@@ -67,7 +84,8 @@ Repo name settled: `civic-dashboard`. A friendlier project/display name is still
 ## Next steps
 
 1. ~~Pick a name and create the GitHub repo.~~ Done — `civic-dashboard` repo created, Angular scaffold committed.
-2. Check whether the open data catalogue exposes ward boundary data as a direct file (GeoJSON/shapefile) and confirm it covers Ward 11.
-3. Locate and pull the budget data in a usable (non-PDF-only) form, or confirm PDF parsing is the only option.
-4. Check whether council agendas/by-laws have any API or structured feed, or only published web pages.
-5. Screen-by-screen spec for the three pillars (councillor info, budget breakdown, ward activity).
+2. ~~Confirm ward boundary data.~~ Done — GeoJSON via ArcGIS layer, Ward 11 present (see Confirmed data sources).
+3. ~~Find non-PDF budget data.~~ Done — Consolidated Statement of Operations CSV, 2012–2025, by function. Service-area detail beyond that is PDF-only after 2019.
+4. ~~Check for a council agenda feed.~~ Done — eSCRIBE JSON endpoint for meetings. By-laws still have no feed.
+5. Screen-by-screen spec for the three pillars (councillor info, budget breakdown, ward activity), now that the data shapes are known.
+6. A Node/TypeScript data-pull script that fetches the datasets above into `public/data/*.json` for the static build.

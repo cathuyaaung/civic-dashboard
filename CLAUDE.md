@@ -49,10 +49,10 @@ a v1 requirement — resist scope creep back toward "the whole city."
 
 Early scaffold stage. `ng new` scaffold is in place and builds clean. No
 data-fetching, parsing, or real UI screens exist yet. See "Next steps" at
-the bottom of `docs/design-notes.md` for what's actually queued next — as of
-this writing: confirming the ward-boundary open-data format, finding a
-non-PDF form of the budget data, checking for a council agenda/by-law feed,
-and a screen-by-screen spec for the three pillars above.
+the bottom of `docs/design-notes.md` for what's actually queued next. Data
+sources for all three pillars were confirmed on 2026-11-17 (see "Confirmed
+data sources" in the design notes); next up is the screen-by-screen spec and
+a data-pull script.
 
 ## Working style notes
 
