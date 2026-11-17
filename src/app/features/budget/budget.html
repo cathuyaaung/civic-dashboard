@@ -10,12 +10,39 @@
     }
     @default {
       @if (summary(); as s) {
-        <div class="hero">
-          <p class="hero-label">City of Mississauga spending in {{ s.year }}</p>
-          <p class="hero-value">{{ money(s.total) }}</p>
-          <p class="muted">
-            {{ signedPercent(s.totalChange) }} since {{ s.firstYear }}, not adjusted for inflation
-          </p>
+        <div class="overview">
+          <app-donut
+            [slices]="slices()"
+            [centreValue]="money(s.total)"
+            [centreLabel]="'spent in ' + s.year"
+            [format]="money"
+            [(active)]="active"
+            [ariaLabel]="'Share of ' + s.year + ' city spending by service'"
+          />
+          <div class="headline">
+            <p class="eyebrow">City of Mississauga spending, {{ s.year }}</p>
+            @if (top(); as t) {
+              <p class="big">
+                <span class="cents">{{ cents(t.share) }}¢</span>
+                of every dollar
+              </p>
+              <p class="big-sub">goes to {{ t.label | lowercase }}</p>
+            }
+            <div class="tiles">
+              <app-stat-tile
+                [label]="'Total since ' + s.firstYear"
+                [value]="signedPercent(s.totalChange)"
+                detail="not adjusted for inflation"
+              />
+              @if (fastest(); as f) {
+                <app-stat-tile
+                  label="Fastest growing"
+                  [value]="signedPercent(f.change)"
+                  [detail]="f.label + ' since ' + s.firstYear"
+                />
+              }
+            </div>
+          </div>
         </div>
 
         <div class="ranked">
@@ -27,10 +54,21 @@
           </div>
           <ol [attr.aria-label]="'Spending by service, ' + s.year">
             @for (c of ranked(); track c.line) {
-              <li class="row">
+              <li
+                class="row"
+                [class.active]="active() === c.line"
+                [class.dim]="active() !== null && active() !== c.line"
+                (pointerenter)="active.set(c.line)"
+                (pointerleave)="active.set(null)"
+              >
                 <span class="name">{{ c.label }}</span>
                 <span class="bar-cell">
-                  <span class="bar" [style.--fill]="c.share / maxShare()" aria-hidden="true"></span>
+                  <span
+                    class="bar"
+                    [style.--fill]="c.share / maxShare()"
+                    [style.background]="c.color.fill"
+                    aria-hidden="true"
+                  ></span>
                   <span class="value">
                     {{ money(c.amount) }} <span class="muted">· {{ share(c.share) }}</span>
                   </span>
@@ -40,6 +78,7 @@
                   [values]="c.series"
                   [labels]="s.years"
                   [format]="money"
+                  [color]="c.color.fill"
                   [ariaLabel]="
                     c.label +
                     ' spending ' +

@@ -1,5 +1,6 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { ApplicationRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { BudgetData } from '../../core/budget';
 import { Budget } from './budget';
@@ -50,8 +51,15 @@ describe('Budget', () => {
       h.expectOne('data/meta.json').flush({ ward: 11, sources: {} });
     });
 
-    expect(el.querySelector('.hero-value')?.textContent?.trim()).toBe('$693M');
-    expect(el.querySelector('.hero')?.textContent).toContain('in 2025');
+    // Donut: one slice per ranked row, total in the centre.
+    expect(el.querySelectorAll('app-donut path').length).toBe(3);
+    expect(el.querySelector('app-donut .c-value')?.textContent?.trim()).toBe('$693M');
+    expect(el.querySelector('app-donut .c-label')?.textContent?.trim()).toBe('spent in 2025');
+
+    // Headline: largest share as cents of a dollar ($496M of $693M ≈ 72%).
+    const headline = el.querySelector('.headline')?.textContent?.replace(/\s+/g, ' ');
+    expect(headline).toContain('72¢ of every dollar');
+    expect(headline).toContain('goes to transportation');
 
     const names = [...el.querySelectorAll('ol .name')].map((n) => n.textContent?.trim());
     expect(names).toEqual(['Transportation', 'Protection', 'Other (health, social & family)']);
@@ -60,6 +68,20 @@ describe('Budget', () => {
     // The full table still lists every category separately.
     const tableRows = [...el.querySelectorAll('tbody th')].map((t) => t.textContent?.trim());
     expect(tableRows).toContain('Health');
+  });
+
+  it('links the list and the donut on hover', async () => {
+    const el = await render((h) => {
+      h.expectOne('data/budget.json').flush(data);
+      h.expectOne('data/meta.json').flush({ ward: 11, sources: {} });
+    });
+
+    el.querySelectorAll('ol li')[1].dispatchEvent(new Event('pointerenter'));
+    await TestBed.inject(ApplicationRef).whenStable();
+
+    expect(el.querySelector('app-donut .c-value')?.textContent?.trim()).toBe('$196M');
+    expect(el.querySelectorAll('app-donut path.dim').length).toBe(2);
+    expect(el.querySelectorAll('ol li.dim').length).toBe(2);
   });
 
   it('explains how to fix a missing data file', async () => {

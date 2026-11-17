@@ -11,6 +11,7 @@ const PAD = 4; // room for the end dot and its ring
 @Component({
   selector: 'app-sparkline',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { '[style.--spark-dot]': 'color()' },
   template: `
     <svg
       [attr.width]="W"
@@ -58,7 +59,7 @@ const PAD = 4; // room for the end dot and its ring
       stroke-width: 1;
     }
     .dot {
-      fill: var(--accent);
+      fill: var(--spark-dot, var(--accent));
       stroke: var(--bg);
       stroke-width: 2;
     }
@@ -84,6 +85,8 @@ export class Sparkline {
   readonly labels = input.required<(string | number)[]>();
   readonly format = input<(v: number) => string>((v) => v.toLocaleString());
   readonly ariaLabel = input('');
+  /** Colour of the end/hover dot. */
+  readonly color = input('var(--accent)');
 
   protected readonly W = W;
   protected readonly H = H;

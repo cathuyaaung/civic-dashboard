@@ -49,6 +49,34 @@ const NON_SERVICE_LINES = new Set([
 
 const THOUSANDS = 1000;
 
+/**
+ * Colour per service, keyed by the published line name so a service keeps
+ * its colour whatever its rank in a given year. Slots follow the validated
+ * categorical order (styles.scss --cat-N); anything unlisted is grey.
+ */
+const COLOR_SLOT: Record<string, number> = {
+  'Transportation services': 1,
+  'General government services': 2,
+  'Recreation and cultural services': 3,
+  'Protection services': 4,
+  'Planning and development services': 5,
+  'Environmental services': 6,
+};
+
+export interface CategoryColor {
+  /** CSS colour for the mark. */
+  fill: string;
+  /** Text colour for a label drawn inside the mark. */
+  ink: string;
+}
+
+export function categoryColor(line: string): CategoryColor {
+  const slot = COLOR_SLOT[line];
+  if (!slot) return { fill: 'var(--cat-other)', ink: '#ffffff' };
+  // White labels on every slot except yellow (4), per the palette's label rule.
+  return { fill: `var(--cat-${slot})`, ink: slot === 4 ? '#0b0b0b' : '#ffffff' };
+}
+
 const label = (line: string) =>
   line.replace(/ services$/i, '').replace(/^Social and family$/, 'Social & family');
 
