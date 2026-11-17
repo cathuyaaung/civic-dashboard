@@ -6,13 +6,13 @@ Live version of this doc: https://claude.ai/artifact/2LZe1n7yDJTr4KZJmAimUw
 
 ## Vision and scope
 
-A single-user civic dashboard answering three questions from the point of view of someone who actually lives here: where does my money go, what is my city doing that affects me, and who's making those decisions.
+A civic dashboard for Mississauga answering three questions from the point of view of someone who actually lives here: where does my money go, what is my city doing that affects me, and who's making those decisions.
 
 Built as a portfolio/GitHub project after shelving an earlier neighborhood tool-sharing concept (abandoned because the founder didn't know his neighbors and couldn't seed the trust model it required). Key differences this time:
 
-- No platform, no network effect needed. One person (the builder) gets full value alone; nobody else has to adopt it for it to be worth building.
+- No platform, no network effect needed. This part stands, and it is what keeps the project finishable: no accounts, no user-generated content, nobody to recruit — a static site over public data. What was dropped on 2026-11-17 is the single-user rationale, not this.
 - Real, already-public data, not scraped or sensitive — pulled from the City of Mississauga's open data catalogue and published budget/council documents.
-- Scoped small enough to actually finish. Mississauga-wide, all 11 wards, is a stretch goal; v1 is one ward only.
+- City-centric, with drill-down to a single ward. Reversed on 2026-11-17: ward-only stopped making sense, and the "useful to exactly one person on day one" framing went with it. Mississauga-wide is the default view; a ward selector narrows the screens to one ward.
 - Doubles as a genuine personal utility (actually useful to know this) and a resume-worthy technical project (data ingestion from open data APIs/PDFs, a real dashboard UI — not just CRUD).
 
 ## Anchor facts
@@ -32,16 +32,17 @@ An address → ward lookup was originally planned here as the first technical pi
 
 - **Visual first — a dashboard, not a document** (standing decision, 2026-11-17). The audience is an average resident. Each screen leads with something visual — maps, charts, stat tiles, hero numbers, colour and clear hierarchy — with lists and text as supporting detail. Things cannot look dull. Visuals still follow honest data-viz rules: no misleading charts, accessible colours, a table view behind every chart.
 - **No footnotes — easy to read is the whole point** (standing decision, 2026-11-17). A resident should understand a screen without reading notes at the bottom. Explanations go where the eye already is: in labels ("Property taxes (City's share)"), short qualifiers in headings ("cash only"), or in the visual itself (a money-in vs money-out bar instead of a paragraph about surpluses). Nuance that truly doesn't fit goes in a small on-demand ⓘ info tip, used sparingly — never a notes list. Source attribution at the bottom is fine.
+- **City first, then drill down to a ward** (standing decision, 2026-11-17, replacing "v1 is one ward only"). Mississauga as a whole is the default view; a ward selector in the header narrows the screens to one ward and is remembered across them. This reverses the earlier ward-only scope, and with it the premise that the dashboard only had to be useful to one person. The no-platform constraints are unaffected: still no accounts, still a static site over public open data. Where a dataset has no ward dimension (the budget), the city-wide view stands and the selector doesn't pretend otherwise.
 
 ## v1 scope — the three pillars
 
-1. **Who's deciding** — Councillor Brad Butt (Ward 11): contact info, committees he sits on, how to reach him.
+1. **Who's deciding** — all 11 councillors and how to reach them, from the ward boundaries dataset; narrowing to a ward shows just that ward's councillor. Committees aren't in any dataset yet.
 2. **Where my money goes** — Mississauga's budget broken down by service area (fire, roads, library, etc.), pulled from the published budget data and shown as a simple visual instead of the dense multi-hundred-page PDF. Stretch: apply the city-wide percentages against the user's own roll number/assessed value for a personalized dollar breakdown, not just the city-wide average.
-3. **What's happening in Ward 11 specifically** — upcoming council/committee agenda items, recent by-laws, nearby development applications (the city's open data includes development-application history per property/area).
+3. **What's happening** — upcoming council/committee agenda items, recent by-laws, nearby development applications (the city's open data includes development-application history per property/area).
 
 **Deliberately out of v1 scope:**
 
-- All 11 wards (single-ward only, for now)
+- Spending broken down by ward — the city publishes operating results by service function, not by ward, so the budget screen stays city-wide even when a ward is selected
 - Live/real-time council vote tracking (agenda items and by-laws update continuously; v1 treats this as a periodic pull, not a live feed)
 - Any account login, personal tax bill lookup requiring authentication, or anything beyond public open data + a manually entered roll number/value
 
@@ -100,3 +101,4 @@ Repo name settled: `civic-dashboard`. A friendlier project/display name is still
 9. ~~Address → ward lookup.~~ Dropped — replaced by a Ward 11 map on the "What's happening" screen.
 10. Per-resident view on the budget screen — population data is pulled (`public/data/population.json`), not yet shown.
 11. Open: by-laws (no feed found), committees the councillor sits on (not in any dataset), and what the city means by the "Withheld" application status.
+12. Go city-centric with a ward selector (decided 2026-11-17). Smaller than it sounds: `wards.geojson` already holds all 11 wards and councillors (`where: '1=1'`), and the budget, revenue, CPI, population and meetings data was never ward-scoped. Four changes: `WARD = '11'` in `core/ward.ts` becomes a selected-ward signal with an "All of Mississauga" default; `where: Ward=11` in `scripts/fetch-data.mts` becomes `1=1` for development applications, keeping the `Ward` field for client-side filtering; the councillor screen lists all 11 and narrows to one; "Ward 11" comes out of the page titles and the header.

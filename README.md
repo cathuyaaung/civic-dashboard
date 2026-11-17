@@ -1,12 +1,14 @@
-# Ward 11 Civic Dashboard
+# Civic Dashboard
 
-A civic dashboard for Mississauga Ward 11 — answering three questions for a resident:
+A civic dashboard for Mississauga — answering three questions for a resident:
 
-- **Who's deciding** — councillor and ward info
+- **Who's deciding** — councillors and ward info
 - **Where my money goes** — city budget, by service area
-- **What's happening** — council agenda items, by-laws, development applications in Ward 11
+- **What's happening** — council agenda items, by-laws, development applications
 
-Built as a single-user portfolio project: no accounts, no backend database initially, just public open data surfaced clearly.
+The city as a whole is the default view, with drill-down to a single ward.
+
+Built as a portfolio project: no accounts, no backend database initially, just public open data surfaced clearly.
 
 Full design notes: https://claude.ai/artifact/2LZe1n7yDJTr4KZJmAimUw
 

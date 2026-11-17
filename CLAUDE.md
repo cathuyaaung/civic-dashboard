@@ -6,15 +6,19 @@ it.
 
 ## What this is
 
-A single-user civic dashboard for **Ward 11, Mississauga** (Councillor Brad
-Butt), built by Thuya as a portfolio/GitHub project. It answers three
-questions from a resident's point of view:
+A civic dashboard for **Mississauga**, built by Thuya as a portfolio/GitHub
+project. It answers three questions from a resident's point of view:
 
 1. **Who's deciding** — councillor info, committees, contact
 2. **Where my money goes** — city budget by service area, visualized instead
    of buried in a hundreds-of-pages PDF
-3. **What's happening in Ward 11** — council/committee agenda items, by-laws,
+3. **What's happening** — council/committee agenda items, by-laws,
    nearby development applications
+
+The city as a whole is the default view, with drill-down to a single ward.
+Ward 11 (Councillor Brad Butt) is the builder's own ward and the one the
+project started with, so it's the handiest thing to test against — but it is
+no longer the scope.
 
 Full design rationale, data sources, and open questions:
 [`docs/design-notes.md`](./docs/design-notes.md) — read that first before
@@ -23,15 +27,19 @@ looks out of date, ask the person whether the doc has moved on.
 
 ## Why it's built this way
 
-This is explicitly **not a platform** — no accounts, no other users, no
-network effect required. It replaced an earlier neighborhood tool-sharing app
-concept that was shelved because it needed other people to adopt it and the
-founder couldn't seed that. This project's whole premise is that it's useful
-to exactly one person (the builder) on day one, using already-public city
-open data.
+This is explicitly **not a platform** — no accounts, no user-generated
+content, no network effect required. It replaced an earlier neighborhood
+tool-sharing app concept that was shelved because it needed other people to
+adopt it and the founder couldn't seed that. The no-platform constraint is
+what keeps this project finishable, and it still holds: a static site over
+already-public city open data.
 
-v1 is scoped to one ward only. All 11 wards is an explicit stretch goal, not
-a v1 requirement — resist scope creep back toward "the whole city."
+**The ward-only scope was reversed on 2026-11-17.** The project is now
+city-centric, with drill-down to a ward (see "Design principles" below). The
+single-user premise — "useful to exactly one person on day one" — went with
+it; a city-wide view serves any resident. What did *not* change is the
+no-platform constraint above: dropping ward-only is not licence to add
+accounts or anything needing an audience to seed.
 
 ## Tech approach
 
@@ -66,6 +74,12 @@ a v1 requirement — resist scope creep back toward "the whole city."
   of a paragraph about surpluses). Nuance that truly doesn't fit goes in a
   small on-demand ⓘ info tip (`app-info-tip`), used sparingly — never a
   notes list. Source attribution at the bottom is fine.
+- **City first, then drill down to a ward.** (Standing decision,
+  2026-11-17, replacing "v1 is one ward only".) Mississauga as a whole is the
+  default view; a ward selector in the header narrows the screens to one ward
+  and is remembered across them. Where a dataset has no ward dimension — the
+  budget is published by service function, not by ward — the city-wide view
+  stands and the selector doesn't pretend otherwise.
 
 ## Current state
 
@@ -76,6 +90,11 @@ data sources" in the design notes). `npm run data` (`scripts/fetch-data.mts`)
 pulls them into `public/data/`, which is committed; the app reads those files
 with `httpResource`, never the city's APIs directly. The "Who's deciding"
 screen, the "Where my money goes" budget screen and the "What's happening" activity screen exist.
+
+That work was merged into `main` on 2026-11-17 (PR #1, from the
+`data-pipeline` branch). The screens are still written as single-ward
+(Ward 11); converting them to city-first with a ward selector is the next
+piece of work.
 
 ## Working style notes
 
