@@ -62,11 +62,6 @@ export function applicationType(applicationNumber: string): string {
   }
 }
 
-/** OpenStreetMap link centred on a point. */
-export function mapLink(lon: number, lat: number): string {
-  return `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=17/${lat}/${lon}`;
-}
-
 /** Current wall-clock time in the city, in the same format as Meeting.start. */
 export function cityNow(now = new Date()): string {
   const parts = Object.fromEntries(

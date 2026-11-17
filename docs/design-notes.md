@@ -26,7 +26,11 @@ Built as a portfolio/GitHub project after shelving an earlier neighborhood tool-
 
 Confirmed via the City of Mississauga's property information tool (mississauga.ca/apps/#/property). This is a condo property — the building's base-building record and the specific unit record are separate lookups in that tool.
 
-This address/ward/roll-number lookup is also the first real technical problem the dashboard needs to solve: the city publishes ward boundaries as open data (shapefile/GeoJSON), so an address → ward mapping in the real app would be a point-in-polygon lookup against that boundary data, the same way the city's own property tool resolves it.
+An address → ward lookup was originally planned here as the first technical piece. **Dropped (2026-11-17):** the user already knows their ward, and the city's Address dataset already includes a `WARD` field for every address, so a point-in-polygon lookup would re-derive published data. A map of the Ward 11 boundary serves residents better (see Design principles).
+
+## Design principles
+
+- **Visual first — a dashboard, not a document** (standing decision, 2026-11-17). The audience is an average resident. Each screen leads with something visual — maps, charts, stat tiles, hero numbers, colour and clear hierarchy — with lists and text as supporting detail. Things cannot look dull. Visuals still follow honest data-viz rules: no misleading charts, accessible colours, a table view behind every chart.
 
 ## v1 scope — the three pillars
 
@@ -55,7 +59,7 @@ All of the open data below is served from the city's ArcGIS Online org (`service
 
 | Pillar | Dataset | Endpoint | Notes |
 | --- | --- | --- | --- |
-| Who's deciding | **Ward Boundaries** (updated 2026-11-16) | `.../Ward_Boundaries/FeatureServer/2` (note: layer **2**, not 0) | 11 polygons, ~300 KB as GeoJSON. Attributes include `WARD`, `COUNCILLOR`, `PHONE`, `URL`, `IMAGE_URL` — Ward 11 = Brad Butt, 905-896-5011. Covers both the address → ward lookup and the basic councillor card. |
+| Who's deciding | **Ward Boundaries** (updated 2026-11-16) | `.../Ward_Boundaries/FeatureServer/2` (note: layer **2**, not 0) | 11 polygons, ~300 KB as GeoJSON. Attributes include `WARD`, `COUNCILLOR`, `PHONE`, `URL`, `IMAGE_URL` — Ward 11 = Brad Butt, 905-896-5011. Covers the ward map and the councillor card. |
 | Where my money goes | **Consolidated Statement of Operations – 2012 to 2025** (CSV, updated 2026-07-09) | `https://www.arcgis.com/sharing/rest/content/items/e86fa318eae44578a64de5507b6a4c1e/data` | ~35 rows, 7.5 KB. Revenues and expenses by function (General government, Protection, Transportation, Environmental, Health, Social & family, Recreation & cultural, Planning & development), **actuals and budgets for every year 2012–2025**, in $000s. Enough for v1's budget visual and year-over-year trends. |
 | Where my money goes (finer grain) | Approved Operating/Capital Budget appendices | Open data, CSV/Feature Service | Only **2016–2019**. Anything newer at service-area granularity (Fire, Library, etc.) is PDF-only. |
 | What's happening | **Growth Management – Active Development Applications** (updated 2026-09-11) | `.../Growth_Management_%E2%80%93_Active_Development_Applications/FeatureServer/0` | 214 points city-wide, has a `Ward` field — `where=Ward=11` returns 17. Includes application number, status, address, description, units, storeys, submission date. |
@@ -65,7 +69,6 @@ All of the open data below is served from the city's ArcGIS Online org (`service
 
 - **By-laws:** no feed or dataset found. By-laws are enacted at Council meetings, so the Council agenda/minutes from eSCRIBE may be the practical source; otherwise the mississauga.ca by-laws page would have to be scraped. Decide during the ward-activity screen spec.
 - **Agenda items per ward:** eSCRIBE gives meetings and agenda documents, not ward-tagged items. Filtering to "Ward 11 items" would mean parsing agenda HTML for ward mentions — keep v1 to a list of upcoming meetings with agenda links.
-- **Address → ward test:** not yet verified against the anchor address; do this locally in the point-in-polygon code rather than sending the address to an external geocoder.
 - **Property-lookup tool:** no public API found; not needed for v1 given the datasets above.
 
 ## Tech approach
@@ -74,7 +77,7 @@ Keep it simple given the data refreshes infrequently (budget is annual, ward bou
 
 - **Front end:** Angular/TypeScript — matches existing professional background, natural portfolio fit.
 - **No backend database needed at first.** Data can be pulled periodically (budget PDF parsed once a year, open data CSVs pulled on a schedule) and the site statically generated from that pulled data, rather than running a live server-side database.
-- **Address → ward lookup:** point-in-polygon check against the city's ward boundary GeoJSON/shapefile from the open data catalogue — this is the first concrete technical piece (see Anchor facts).
+- **Ward map:** Leaflet 1.9 with OpenStreetMap standard tiles (keyless; OSMF tile usage policy — attribution, light use; CARTO basemaps now require an API key), greyed with a CSS filter and inverted for dark mode. Draws the Ward 11 boundary from `wards.geojson` and plots development applications as circles sized by proposed homes. Tiles are the only runtime request to a third party.
 - Hosting/repo: GitHub — [`cathuyaaung/civic-dashboard`](https://github.com/cathuyaaung/civic-dashboard).
 
 ## Naming
@@ -91,5 +94,5 @@ Repo name settled: `civic-dashboard`. A friendlier project/display name is still
 6. ~~Data-pull script.~~ Done — `npm run data` (`scripts/fetch-data.mts`) writes wards, budget, development applications and meetings into `public/data/`.
 7. ~~First screen.~~ Done — "Who's deciding" councillor card at `/councillor`, read from `wards.geojson`. Committees aren't in any dataset yet.
 8. ~~Budget screen.~~ Done — "Where my money goes" at `/budget`: 2025 total, ranked bars by service with 2012–2025 sparklines and change, categories under 0.5% folded into "Other", full year-by-year table.
-9. Address → ward lookup (point-in-polygon against `wards.geojson`) — planned, not built.
+9. ~~Address → ward lookup.~~ Dropped — replaced by a Ward 11 map on the "What's happening" screen.
 10. Open: by-laws (no feed found), committees the councillor sits on (not in any dataset), and what the city means by the "Withheld" application status.

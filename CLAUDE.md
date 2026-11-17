@@ -41,13 +41,27 @@ a v1 requirement — resist scope creep back toward "the whole city."
 - **No backend database at first.** Data refreshes infrequently (budget is
   annual, ward boundaries rarely change), so the plan is periodic data pulls
   + a statically generated site, not a live server.
-- **Address → ward lookup** will be a point-in-polygon check against the
-  city's ward boundary GeoJSON/shapefile (from data.mississauga.ca), the same
-  way the city's own property lookup tool likely resolves it internally.
+- **A ward map, not an address lookup.** The planned address → ward
+  point-in-polygon lookup was dropped on 2026-11-17: the user already knows
+  their ward, and the city's Address dataset already carries a `WARD` per
+  address. Instead, the "What's happening" screen has a Leaflet map of the
+  Ward 11 boundary with development applications plotted. Map tiles are the
+  one thing fetched from a third party at runtime (OpenStreetMap standard
+  tiles: keyless, but under the OSMF usage policy; CARTO now needs a key).
+
+## Design principles
+
+- **Visual first — it should feel like a dashboard, not a document.**
+  (Standing decision, 2026-11-17.) The audience is an average resident, so
+  lead each screen with something visual: maps, charts, stat tiles, hero
+  numbers, colour and clear hierarchy. Plain lists and paragraphs are
+  supporting detail, not the main event. Things cannot look dull. Follow the
+  dataviz skill's rules so "visual" stays honest (no misleading charts,
+  accessible colours, a table view behind every chart).
 
 ## Current state
 
-All three pillars have screens; the address → ward lookup is not built yet. See "Next steps" at
+All three pillars have screens. See "Next steps" at
 the bottom of `docs/design-notes.md` for what's actually queued next. Data
 sources for all three pillars were confirmed on 2026-11-17 (see "Confirmed
 data sources" in the design notes). `npm run data` (`scripts/fetch-data.mts`)

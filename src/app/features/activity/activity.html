@@ -1,5 +1,27 @@
 <h2>What's happening</h2>
 
+<div class="tiles">
+  <app-stat-tile
+    label="Active development applications"
+    [value]="applicationsStatus() === 'resolved' ? '' + applications().length : '–'"
+    [detail]="'in Ward ' + wardNumber"
+  />
+  @if (largest(); as l) {
+    <app-stat-tile
+      label="Largest proposal"
+      [value]="(l.ResidentialUnits | number) + ' homes'"
+      [detail]="l.SiteAddress"
+    />
+  }
+  @if (nextCouncil(); as c) {
+    <app-stat-tile
+      label="Next Council meeting"
+      [value]="(c.start | date: 'MMM d') ?? ''"
+      [detail]="formatMeetingTime(c.start)"
+    />
+  }
+</div>
+
 <section aria-labelledby="applications-heading">
   <h3 id="applications-heading">Development applications in Ward {{ wardNumber }}</h3>
 
@@ -13,8 +35,22 @@
       </p>
     }
     @default {
+      @if (wards(); as w) {
+        <app-ward-map
+          [ward]="wardNumber"
+          [wards]="w"
+          [applications]="mapApplications()"
+          [ariaLabel]="'Map of Ward ' + wardNumber + ' with development applications'"
+        />
+        <p class="legend muted">
+          <span class="swatch ward" aria-hidden="true"></span> Ward {{ wardNumber }}
+          <span class="swatch dot small" aria-hidden="true"></span>
+          <span class="swatch dot large" aria-hidden="true"></span>
+          Application — larger circle, more proposed homes
+        </p>
+      }
+
       @if (applications().length) {
-        <p class="lead">{{ applications().length }} active applications, newest first.</p>
         <ul class="applications">
           @for (a of applications(); track a.ApplicationNumber) {
             <li>
@@ -24,14 +60,17 @@
               </div>
               <p class="description">{{ a.ApplicationDescription }}</p>
               <p class="facts muted">
-                <span>{{ a.type }} · {{ a.ApplicationNumber }}</span>
+                <span class="type">{{ a.type }}</span>
+                <span>{{ a.ApplicationNumber }}</span>
                 @if (a.ResidentialUnits) {
                   <span>{{ a.ResidentialUnits | number }} homes</span>
                 }
                 <span>{{ a.uses }}</span>
                 <span>Status: {{ a.ApplicationStatus }}</span>
-                @if (a.map) {
-                  <a [href]="a.map" target="_blank" rel="noopener">Map</a>
+                @if (a.point) {
+                  <button type="button" class="link" (click)="showOnMap(a.ApplicationNumber)">
+                    Show on map
+                  </button>
                 }
               </p>
             </li>
@@ -50,7 +89,7 @@
     Source:
     <a href="https://data.mississauga.ca" target="_blank" rel="noopener"
       >City of Mississauga Open Data</a
-    >, Active Development Applications
+    >, Active Development Applications and Ward Boundaries
     @if (fetchedAt()?.applications; as at) {
       · fetched {{ at | date: 'mediumDate' }}
     }

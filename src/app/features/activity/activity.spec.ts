@@ -2,7 +2,9 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { DevApplicationCollection, Meeting, MeetingsData } from '../../core/activity';
+import { WardCollection } from '../../core/ward';
 import { Activity } from './activity';
+import { markerRadius } from './ward-map';
 
 const app = (n: string, date: string, units: number | null) => ({
   type: 'Feature' as const,
@@ -47,6 +49,37 @@ const meetings: MeetingsData = {
   ],
 };
 
+const wards: WardCollection = {
+  type: 'FeatureCollection',
+  features: [
+    {
+      type: 'Feature',
+      properties: { WARD: '11', COUNCILLOR: 'X', PHONE: '', URL: '', IMAGE_URL: null },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [-79.8, 43.5],
+            [-79.6, 43.5],
+            [-79.6, 43.7],
+            [-79.8, 43.7],
+            [-79.8, 43.5],
+          ],
+        ],
+      },
+    },
+  ],
+};
+
+describe('markerRadius', () => {
+  it('scales circle area with homes and keeps a floor for non-residential', () => {
+    expect(markerRadius(0, 1000)).toBe(5);
+    expect(markerRadius(1000, 1000)).toBe(18);
+    // Quarter of the homes → half the extra radius (area ∝ homes).
+    expect(markerRadius(250, 1000)).toBeCloseTo(5 + 13 / 2);
+  });
+});
+
 describe('Activity', () => {
   let http: HttpTestingController;
 
@@ -65,6 +98,7 @@ describe('Activity', () => {
     TestBed.tick();
     http.expectOne('data/development-applications.geojson').flush(applications);
     http.expectOne('data/meetings.json').flush(meetings);
+    http.expectOne('data/wards.geojson').flush(wards);
     http.expectOne('data/meta.json').flush({ ward: 11, sources: {} });
     await fixture.whenStable();
     return { fixture, el: fixture.nativeElement as HTMLElement };
@@ -76,6 +110,19 @@ describe('Activity', () => {
     expect(addresses).toEqual(['OZ 25 2 Main St', 'SP 21 1 Main St']);
     expect(el.querySelector('.facts')?.textContent).toContain('Rezoning');
     expect(el.querySelector('.facts')?.textContent).toContain('1,043 homes');
+  });
+
+  it('leads with stat tiles and a map with one circle per application', async () => {
+    const { el } = await render();
+    const tiles = [...el.querySelectorAll('app-stat-tile')].map((t) =>
+      t.textContent?.replace(/\s+/g, ' ').trim(),
+    );
+    expect(tiles[0]).toContain('2');
+    expect(tiles[1]).toContain('1,043 homes');
+    expect(tiles[2]).toContain('Jan 14');
+
+    expect(el.querySelector('app-ward-map .leaflet-container')).not.toBeNull();
+    expect(el.querySelectorAll('app-ward-map path.wm-app').length).toBe(2);
   });
 
   it('shows key meetings by default and all meetings on request', async () => {

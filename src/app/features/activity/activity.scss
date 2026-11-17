@@ -7,8 +7,66 @@ h3 {
   font-size: 1.25rem;
 }
 
-.lead {
-  margin: 0 0 0.5rem;
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem;
+  margin: 0.5rem 0 1rem;
+  font-size: 0.8125rem;
+}
+
+.swatch {
+  display: inline-block;
+  flex: none;
+
+  &.ward {
+    width: 14px;
+    height: 10px;
+    border: 2px solid var(--accent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    border-radius: 2px;
+    margin-right: 0.5rem;
+  }
+
+  &.dot {
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  &.small {
+    width: 8px;
+    height: 8px;
+  }
+
+  &.large {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.type {
+  padding: 0 0.375rem;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--text);
+}
+
+.link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--link);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 ul {
