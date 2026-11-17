@@ -119,7 +119,52 @@ describe('Budget', () => {
     expect(el.querySelector('ol .change-pct')?.textContent?.trim()).toBe('+81%');
     // 2025 itself is the same in both modes.
     expect(el.querySelector('app-donut .c-value')?.textContent?.trim()).toBe('$693M');
-    expect(el.querySelector('caption')?.textContent).toContain('as spent');
+    expect(el.querySelector('caption')?.textContent).toContain('as recorded');
+  });
+
+  it('shows where the money comes from when revenue lines exist', async () => {
+    const withRevenue: BudgetData = {
+      ...data,
+      rows: [
+        ...data.rows,
+        { section: 'Revenues', line: 'Property taxes', actual: [374_304, 755_065], budget: [] },
+        { section: 'Revenues', line: 'User charges', actual: [171_957, 301_200], budget: [] },
+        {
+          section: 'Revenues',
+          line: 'Contributed and assumed assets',
+          actual: [30_873, 33_956],
+          budget: [],
+        },
+      ],
+    };
+    const el = await render((h) => {
+      h.expectOne('data/budget.json').flush(withRevenue);
+      h.expectOne('data/cpi.json').flush(cpi);
+      h.expectOne('data/meta.json').flush({ ward: 11, sources: {} });
+    });
+
+    const revenue = el.querySelector('[aria-labelledby="revenue-heading"]')!;
+    expect(revenue.querySelector('h3')?.textContent).toBe('Where the money comes from');
+    expect(revenue.querySelector('.big-sub')?.textContent?.trim()).toBe(
+      'comes from property taxes',
+    );
+    expect(revenue.querySelector('app-donut .c-label')?.textContent?.trim()).toBe(
+      'received in 2025',
+    );
+    // Second tile is property taxes, not "fastest growing".
+    expect(revenue.querySelectorAll('app-stat-tile')[1].textContent).toContain(
+      'Property taxes since 2012',
+    );
+    expect(revenue.querySelector('.notes')?.textContent).toContain('$34M of non-cash revenue');
+  });
+
+  it('omits the revenue section when there are no revenue lines', async () => {
+    const el = await render((h) => {
+      h.expectOne('data/budget.json').flush(data);
+      h.expectOne('data/cpi.json').flush(cpi);
+      h.expectOne('data/meta.json').flush({ ward: 11, sources: {} });
+    });
+    expect(el.querySelector('[aria-labelledby="revenue-heading"]')).toBeNull();
   });
 
   it('hides the inflation switch when the price index is unavailable', async () => {

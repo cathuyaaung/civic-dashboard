@@ -1,27 +1,24 @@
-import { DatePipe, LowerCasePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import {
   adjustForInflation,
   BudgetData,
-  categoryColor,
   CpiData,
-  foldSmallCategories,
   latestActualYear,
+  summarizeRevenue,
   summarizeSpending,
 } from '../../core/budget';
-import { money, share, signedMoney, signedPercent } from '../../core/format';
+import { money } from '../../core/format';
 import { DataMeta } from '../../core/ward';
-import { Donut, DonutSlice } from '../../shared/donut';
-import { Sparkline } from '../../shared/sparkline';
-import { StatTile } from '../../shared/stat-tile';
+import { BudgetBreakdown } from './budget-breakdown';
 
-/** "actual": dollars as spent. "real": past years restated in the latest year's dollars. */
+/** "actual": dollars as recorded. "real": past years restated in the latest year's dollars. */
 export type DollarMode = 'actual' | 'real';
 
 @Component({
   selector: 'app-budget',
-  imports: [DatePipe, LowerCasePipe, Donut, Sparkline, StatTile],
+  imports: [DatePipe, BudgetBreakdown],
   templateUrl: './budget.html',
   styleUrl: './budget.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,20 +42,30 @@ export class Budget {
   });
 
   protected readonly inflationAvailable = computed(() => this.realData() !== null);
+  protected readonly isReal = computed(() => this.mode() === 'real' && this.inflationAvailable());
 
-  protected readonly summary = computed(() => {
+  /** The data in the selected dollars; undefined while the CPI is still loading. */
+  private readonly shown = computed(() => {
     if (!this.data.hasValue()) return undefined;
     // Wait for the price index rather than flashing actual dollars first.
     if (this.mode() === 'real' && this.cpi.isLoading()) return undefined;
-    const real = this.mode() === 'real' ? this.realData() : null;
-    return summarizeSpending(real ?? this.data.value());
+    return (this.mode() === 'real' ? this.realData() : null) ?? this.data.value();
   });
 
-  protected readonly isReal = computed(() => this.mode() === 'real' && this.inflationAvailable());
+  protected readonly spending = computed(() => {
+    const d = this.shown();
+    return d ? summarizeSpending(d) : undefined;
+  });
+
+  protected readonly revenue = computed(() => {
+    const d = this.shown();
+    const r = d ? summarizeRevenue(d) : undefined;
+    return r?.categories.length ? r : undefined; // no revenue lines → no section
+  });
 
   /** Price change over the period, from the CPI, for the explanatory note. */
   protected readonly priceRise = computed(() => {
-    const s = this.summary();
+    const s = this.spending();
     if (!s || !this.cpi.hasValue()) return null;
     const v = this.cpi.value().values;
     const from = v[String(s.firstYear)];
@@ -68,9 +75,9 @@ export class Budget {
 
   /** One-line explanation of the current dollar mode. */
   protected readonly modeNote = computed(() => {
-    const s = this.summary();
+    const s = this.spending();
     if (!s) return '';
-    if (!this.isReal()) return 'Dollars as spent each year, not adjusted for inflation.';
+    if (!this.isReal()) return 'Dollars as recorded each year, not adjusted for inflation.';
     const rise = this.priceRise();
     const prices =
       rise === null
@@ -82,41 +89,6 @@ export class Budget {
     );
   });
 
-  /** Ranked services with their colours; tiny ones folded into "Other". The table keeps them all. */
-  protected readonly ranked = computed(() => {
-    const s = this.summary();
-    return s ? foldSmallCategories(s).map((c) => ({ ...c, color: categoryColor(c.line) })) : [];
-  });
-
-  protected readonly slices = computed<DonutSlice[]>(() =>
-    this.ranked().map((c) => ({
-      id: c.line,
-      // The donut centre is narrow; "Other (health, …)" is spelled out in the list.
-      label: c.line === 'Other' ? 'Other' : c.label,
-      value: c.amount,
-      color: c.color.fill,
-      ink: c.color.ink,
-    })),
-  );
-
-  protected readonly top = computed(() => this.ranked()[0]);
-
-  /** Fastest-growing service since the first year (ignores the folded "Other"). */
-  protected readonly fastest = computed(() =>
-    this.ranked()
-      .filter((c) => c.line !== 'Other' && c.change !== null)
-      .reduce<ReturnType<typeof this.ranked>[number] | undefined>(
-        (best, c) => (!best || (c.change ?? 0) > (best.change ?? 0) ? c : best),
-        undefined,
-      ),
-  );
-
-  /** Bars scale to the largest category so it fills the track. */
-  protected readonly maxShare = computed(() => this.ranked()[0]?.share || 1);
-
-  /** Service highlighted in both the donut and the list. */
-  protected readonly active = signal<string | null>(null);
-
   protected readonly fetchedAt = computed(() => {
     if (!this.meta.hasValue()) return undefined;
     const s = this.meta.value().sources;
@@ -124,11 +96,4 @@ export class Budget {
   });
 
   protected readonly money = money;
-  protected readonly share = share;
-  protected readonly signedMoney = signedMoney;
-  protected readonly signedPercent = signedPercent;
-  protected readonly cents = (fraction: number) => Math.round(fraction * 100);
-  /** amount − baseline, or null without a baseline. */
-  protected readonly delta = (amount: number, baseline: number | null) =>
-    baseline === null ? null : amount - baseline;
 }

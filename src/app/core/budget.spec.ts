@@ -3,7 +3,8 @@ import {
   BudgetData,
   foldSmallCategories,
   latestActualYear,
-  SpendingSummary,
+  BudgetSummary,
+  summarizeRevenue,
   summarizeSpending,
 } from './budget';
 
@@ -40,13 +41,14 @@ describe('foldSmallCategories', () => {
     baseline: series[0],
     change: null,
   });
-  const summary: SpendingSummary = {
+  const summary: BudgetSummary = {
     year: 2013,
     firstYear: 2012,
     years: [2012, 2013],
     total: 1000,
     totalBaseline: 902,
     totalChange: null,
+    excluded: 0,
     categories: [
       cat('Roads', 0.996, [900, 996]),
       cat('Health', 0.003, [1, 3]),
@@ -128,5 +130,50 @@ describe('summarizeSpending', () => {
 
   it('rejects a year with no data', () => {
     expect(() => summarizeSpending(data, 1999)).toThrow();
+  });
+});
+
+describe('summarizeRevenue', () => {
+  const rev = (line: string, actual: (number | null)[]) => ({
+    section: 'Revenues',
+    line,
+    actual,
+    budget: actual.map(() => null),
+  });
+  const data: BudgetData = {
+    unit: 'thousands of CAD',
+    years: [2023, 2024, 2025],
+    rows: [
+      rev('Property taxes', [600, 650, 700]),
+      rev('Payment in lieu of taxes', [null, 30, 40]),
+      rev('User charges', [200, 220, 250]),
+      rev('Development and other contributions applied', [100, 0, 0]),
+      rev('Obligatory reserve fund revenue applied', [null, 90, 110]),
+      rev('Contributed and assumed assets', [50, 500, 30]),
+      rev('Some new line the city adds', [null, null, 5]),
+      rev('Total Revenues', [950, 1490, 1135]),
+      { section: 'Expenses', line: 'Transportation services', actual: [1, 1, 1], budget: [] },
+    ],
+  };
+
+  it('groups lines into plain-language sources, ranked largest first', () => {
+    const r = summarizeRevenue(data);
+    expect(r.categories.map((c) => [c.label, c.amount])).toEqual([
+      ['Property taxes', 740_000], // includes payments in lieu
+      ['Fees and charges', 250_000],
+      ['Development charges and reserve funds', 110_000],
+      ['Other', 5_000], // unknown lines can't vanish
+    ]);
+  });
+
+  it('bridges reclassified lines so trends stay continuous', () => {
+    const dev = summarizeRevenue(data).categories.find((c) => c.line.startsWith('Development'))!;
+    expect(dev.series).toEqual([100_000, 90_000, 110_000]);
+  });
+
+  it('leaves non-cash revenue out of the total and reports it', () => {
+    const r = summarizeRevenue(data, 2024);
+    expect(r.excluded).toBe(500_000);
+    expect(r.total).toBe(650_000 + 30_000 + 220_000 + 0 + 90_000);
   });
 });

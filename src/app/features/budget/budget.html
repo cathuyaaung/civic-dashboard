@@ -1,197 +1,94 @@
-<section aria-labelledby="budget-heading">
-  <h2 id="budget-heading">Where my money goes</h2>
+<h2>Where my money goes</h2>
 
-  @switch (status()) {
-    @case ('loading') {
-      <p class="muted">Loading budget data…</p>
-    }
-    @case ('error') {
-      <p class="error">Couldn't load budget data. Run <code>npm run data</code> to fetch it.</p>
-    }
-    @default {
-      @if (summary(); as s) {
-        @if (inflationAvailable()) {
-          <div class="mode-bar">
-            <div class="segmented" role="group" aria-label="How to show past amounts">
-              <button
-                type="button"
-                [attr.aria-pressed]="mode() === 'actual'"
-                (click)="mode.set('actual')"
-              >
-                Actual dollars
-              </button>
-              <button
-                type="button"
-                [attr.aria-pressed]="mode() === 'real'"
-                (click)="mode.set('real')"
-              >
-                Adjusted for inflation
-              </button>
-            </div>
-            <p class="mode-note muted">{{ modeNote() }}</p>
-          </div>
-        }
-
-        <div class="overview">
-          <app-donut
-            [slices]="slices()"
-            [centreValue]="money(s.total)"
-            [centreLabel]="'spent in ' + s.year"
-            [format]="money"
-            [(active)]="active"
-            [ariaLabel]="'Share of ' + s.year + ' city spending by service'"
-          />
-          <div class="headline">
-            <p class="eyebrow">City of Mississauga spending, {{ s.year }}</p>
-            @if (top(); as t) {
-              <p class="big">
-                <span class="cents">{{ cents(t.share) }}¢</span>
-                of every dollar
-              </p>
-              <p class="big-sub">goes to {{ t.label | lowercase }}</p>
-            }
-            <div class="tiles">
-              <app-stat-tile
-                [label]="
-                  'Spending change since ' + s.firstYear + (isReal() ? ' (after inflation)' : '')
-                "
-                [value]="signedMoney(delta(s.total, s.totalBaseline))"
-                [detail]="
-                  money(s.totalBaseline ?? 0) +
-                  ' → ' +
-                  money(s.total) +
-                  ' · ' +
-                  signedPercent(s.totalChange)
-                "
-              />
-              @if (fastest(); as f) {
-                <app-stat-tile
-                  [label]="'Fastest growing' + (isReal() ? ' (after inflation)' : '')"
-                  [value]="signedPercent(f.change)"
-                  [detail]="f.label + ': ' + money(f.baseline ?? 0) + ' → ' + money(f.amount)"
-                />
-              }
-            </div>
-          </div>
+@switch (status()) {
+  @case ('loading') {
+    <p class="muted">Loading budget data…</p>
+  }
+  @case ('error') {
+    <p class="error">Couldn't load budget data. Run <code>npm run data</code> to fetch it.</p>
+  }
+  @default {
+    @if (inflationAvailable()) {
+      <div class="mode-bar">
+        <div class="segmented" role="group" aria-label="How to show past amounts">
+          <button
+            type="button"
+            [attr.aria-pressed]="mode() === 'actual'"
+            (click)="mode.set('actual')"
+          >
+            Actual dollars
+          </button>
+          <button type="button" [attr.aria-pressed]="mode() === 'real'" (click)="mode.set('real')">
+            Adjusted for inflation
+          </button>
         </div>
+        <p class="mode-note muted">{{ modeNote() }}</p>
+      </div>
+    }
 
-        <div class="ranked">
-          <div class="row head" aria-hidden="true">
-            <span class="name">Service</span>
-            <span class="bar-cell">{{ s.year }} spending</span>
-            <span class="spark">Trend {{ s.firstYear }}–{{ s.year }}</span>
-            <span class="change">Since {{ s.firstYear }}</span>
-          </div>
-          <ol [attr.aria-label]="'Spending by service, ' + s.year">
-            @for (c of ranked(); track c.line) {
-              <li
-                class="row"
-                [class.active]="active() === c.line"
-                [class.dim]="active() !== null && active() !== c.line"
-                (pointerenter)="active.set(c.line)"
-                (pointerleave)="active.set(null)"
-              >
-                <span class="name">{{ c.label }}</span>
-                <span class="bar-cell">
-                  <span
-                    class="bar"
-                    [style.--fill]="c.share / maxShare()"
-                    [style.background]="c.color.fill"
-                    aria-hidden="true"
-                  ></span>
-                  <span class="value">
-                    {{ money(c.amount) }} <span class="muted">· {{ share(c.share) }}</span>
-                  </span>
-                </span>
-                <app-sparkline
-                  class="spark"
-                  [values]="c.series"
-                  [labels]="s.years"
-                  [format]="money"
-                  [color]="c.color.fill"
-                  [ariaLabel]="
-                    c.label +
-                    ' spending ' +
-                    s.firstYear +
-                    ' to ' +
-                    s.year +
-                    ', change ' +
-                    signedPercent(c.change)
-                  "
-                />
-                <span class="change">
-                  <span class="change-money">{{ signedMoney(delta(c.amount, c.baseline)) }}</span>
-                  <span class="change-pct muted">{{ signedPercent(c.change) }}</span>
-                </span>
-              </li>
-            }
-          </ol>
-        </div>
-
-        <details>
-          <summary>Every year, by service</summary>
-          <div class="table-scroll">
-            <table>
-              <caption>
-                @if (isReal()) {
-                  Spending, millions of {{ s.year }} dollars (adjusted for inflation)
-                } @else {
-                  Spending, millions of dollars as spent
-                }
-              </caption>
-              <thead>
-                <tr>
-                  <th scope="col">Service</th>
-                  @for (y of s.years; track y) {
-                    <th scope="col">{{ y }}</th>
-                  }
-                </tr>
-              </thead>
-              <tbody>
-                @for (c of s.categories; track c.line) {
-                  <tr>
-                    <th scope="row">{{ c.label }}</th>
-                    @for (v of c.series; track $index) {
-                      <td>{{ v === null ? '–' : (v / 1e6).toFixed(1) }}</td>
-                    }
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
-        </details>
-
+    @if (spending(); as s) {
+      <section class="section" aria-labelledby="spending-heading">
+        <h3 id="spending-heading">Where the money goes</h3>
+        <app-budget-breakdown [summary]="s" kind="spending" [isReal]="isReal()" />
         <ul class="notes muted">
           <li>
-            Actual spending on all City services from every funding source (property tax, transit
-            fares, user fees, grants), not just property tax.
+            Spending on all City services from every funding source (property tax, transit fares,
+            user fees, grants), not just property tax.
           </li>
           <li>
             Your property tax bill also pays the Region of Peel (including police) and school
             boards. That spending isn't shown here.
           </li>
         </ul>
-      }
+      </section>
+    }
+
+    @if (revenue(); as r) {
+      <section class="section" aria-labelledby="revenue-heading">
+        <h3 id="revenue-heading">Where the money comes from</h3>
+        <app-budget-breakdown [summary]="r" kind="revenue" [isReal]="isReal()" />
+        <ul class="notes muted">
+          @if (spending(); as s) {
+            <li>
+              In {{ r.year }} the City took in {{ money(r.total) }} and spent {{ money(s.total) }}.
+              That gap isn't profit: the spending figures count the yearly wear on roads, buildings
+              and vehicles rather than the cost of building or buying them, so most of the
+              difference pays for new capital projects or goes into reserves.
+            </li>
+          }
+          @if (r.excluded > 0) {
+            <li>
+              Leaves out {{ money(r.excluded) }} of non-cash revenue in {{ r.year }}: roads, parks
+              and pipes that developers hand over to the City, and one-time accounting gains.
+            </li>
+          }
+          <li>
+            “Property taxes” is the City's share only, including payments in lieu of taxes from
+            other governments. Development charges and reserve funds rise and fall with construction
+            activity, so their change since {{ r.firstYear }} swings widely.
+          </li>
+        </ul>
+      </section>
     }
   }
+}
 
-  <p class="source muted">
-    Source:
-    <a href="https://data.mississauga.ca" target="_blank" rel="noopener"
-      >City of Mississauga Open Data</a
-    >, Consolidated Statement of Operations 2012–2025
-    @if (fetchedAt()?.budget; as at) {
-      · fetched {{ at | date: 'mediumDate' }}
-    }
-    @if (inflationAvailable()) {
-      · Inflation:
-      <a
-        href="https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000501"
-        target="_blank"
-        rel="noopener"
-        >Statistics Canada, table 18-10-0005-01</a
-      >
-      (CPI, Toronto)
-    }
-  </p>
-</section>
+<p class="source muted">
+  Source:
+  <a href="https://data.mississauga.ca" target="_blank" rel="noopener"
+    >City of Mississauga Open Data</a
+  >, Consolidated Statement of Operations 2012–2025
+  @if (fetchedAt()?.budget; as at) {
+    · fetched {{ at | date: 'mediumDate' }}
+  }
+  @if (inflationAvailable()) {
+    · Inflation:
+    <a
+      href="https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000501"
+      target="_blank"
+      rel="noopener"
+      >Statistics Canada, table 18-10-0005-01</a
+    >
+    (CPI, Toronto)
+  }
+</p>
