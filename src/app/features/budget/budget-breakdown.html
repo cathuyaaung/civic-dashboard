@@ -29,7 +29,7 @@
     }
     <div class="tiles">
       <app-stat-tile
-        [label]="t.noun + ' since ' + s.firstYear + afterInflation()"
+        [label]="t.noun + ' ' + vs() + afterInflation()"
         [value]="signedMoney(delta(s.total, s.totalBaseline))"
         [detail]="
           money(s.totalBaseline ?? 0) +
@@ -69,7 +69,7 @@
     <span class="name">{{ t.item }}</span>
     <span class="bar-cell">{{ s.year }} {{ t.noun | lowercase }}</span>
     <span class="spark">Trend {{ s.firstYear }}–{{ s.year }}</span>
-    <span class="change">Since {{ s.firstYear }}</span>
+    <span class="change">{{ vs() }}</span>
   </div>
   <ol [attr.aria-label]="t.noun + ' by ' + t.items + ', ' + s.year">
     @for (c of ranked(); track c.line) {
@@ -99,7 +99,15 @@
           [format]="money"
           [color]="c.color.fill"
           [ariaLabel]="
-            c.label + ', ' + s.firstYear + ' to ' + s.year + ', change ' + signedPercent(c.change)
+            c.label +
+            ', ' +
+            s.firstYear +
+            ' to ' +
+            s.year +
+            ', change ' +
+            vs() +
+            ' ' +
+            signedPercent(c.change)
           "
         />
         <span class="change">

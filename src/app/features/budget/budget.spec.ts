@@ -107,7 +107,7 @@ describe('Budget', () => {
     const [actual, real] = el.querySelectorAll<HTMLButtonElement>('.segmented button');
     expect(real.getAttribute('aria-pressed')).toBe('true');
     expect(el.querySelector('.mode-note')?.textContent?.trim()).toBe(
-      'In 2025 dollars · prices rose 50% since 2012',
+      'In 2025 dollars · prices rose 50% vs 2012',
     );
     expect(el.querySelector('caption')?.textContent).toContain('2025 dollars');
 
@@ -155,7 +155,7 @@ describe('Budget', () => {
     );
     // Second tile is property taxes, not "fastest growing".
     expect(revenue.querySelectorAll('app-stat-tile')[1].textContent).toContain(
-      'Property taxes since 2012',
+      'Property taxes vs 2012',
     );
     // Non-cash exclusion: a short qualifier, with the reason behind an ⓘ.
     expect(revenue.querySelector('.eyebrow')?.textContent).toContain('cash only');

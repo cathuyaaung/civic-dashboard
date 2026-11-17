@@ -21,6 +21,9 @@ const STATCAN_WDS = 'https://www150.statcan.gc.ca/t1/wds/rest';
 const CPI_TABLE = 18100005;
 /** Geography 16 = Toronto, Ontario; product 2 = All-items. */
 const CPI_TORONTO_ALL_ITEMS = '16.2.0.0.0.0.0.0.0.0';
+const POPULATION_TABLE = 17100155;
+/** Geography member 2134 = Mississauga (CY), Ontario. */
+const POPULATION_MISSISSAUGA = '2134.0.0.0.0.0.0.0.0.0';
 
 // Meetings window, relative to today.
 const MEETINGS_DAYS_BACK = 30;
@@ -200,27 +203,48 @@ async function meetings(): Promise<Json> {
  * Used to restate past spending in the latest year's dollars.
  */
 async function cpi(): Promise<Json> {
-  const res = await get(`${STATCAN_WDS}/getDataFromCubePidCoordAndLatestNPeriods`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify([
-      { productId: CPI_TABLE, coordinate: CPI_TORONTO_ALL_ITEMS, latestN: 30 },
-    ]),
-  });
-  const [series] = (await res.json()) as {
-    status: string;
-    object?: { vectorDataPoint?: { refPer: string; value: number }[] };
-  }[];
-  const points = series?.object?.vectorDataPoint;
-  if (series?.status !== 'SUCCESS' || !points?.length) {
-    throw new Error(`StatCan CPI: ${series?.status ?? 'no response'}`);
-  }
   return {
     geography: 'Toronto, Ontario',
     series: 'Consumer Price Index, all-items, annual average (2002=100)',
     table: '18-10-0005-01',
-    values: Object.fromEntries(points.map((p) => [p.refPer.slice(0, 4), p.value])),
+    values: await statcanAnnual(CPI_TABLE, CPI_TORONTO_ALL_ITEMS, 'CPI'),
   };
+}
+
+/**
+ * Statistics Canada population estimates, July 1, Mississauga (CY)
+ * (table 17-10-0155-01, 2021 census boundaries). Estimates are revised each
+ * year, so re-pulling can change past values slightly.
+ */
+async function population(): Promise<Json> {
+  return {
+    geography: 'Mississauga (CY), Ontario',
+    series: 'Population estimates, July 1 (2021 boundaries)',
+    table: '17-10-0155-01',
+    values: await statcanAnnual(POPULATION_TABLE, POPULATION_MISSISSAUGA, 'population'),
+  };
+}
+
+/** One annual series from the StatCan Web Data Service, as { "2012": value, … }. */
+async function statcanAnnual(
+  productId: number,
+  coordinate: string,
+  what: string,
+): Promise<Record<string, number>> {
+  const res = await get(`${STATCAN_WDS}/getDataFromCubePidCoordAndLatestNPeriods`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify([{ productId, coordinate, latestN: 30 }]),
+  });
+  const [series] = (await res.json()) as {
+    status: string;
+    object?: { vectorDataPoint?: { refPer: string; value: number | null }[] };
+  }[];
+  const points = series?.object?.vectorDataPoint?.filter((p) => p.value !== null);
+  if (series?.status !== 'SUCCESS' || !points?.length) {
+    throw new Error(`StatCan ${what}: ${series?.status ?? 'no response'}`);
+  }
+  return Object.fromEntries(points.map((p) => [p.refPer.slice(0, 4), p.value as number]));
 }
 
 // --- Runner ------------------------------------------------------------------
@@ -238,6 +262,11 @@ const sources: Record<string, { file: string; url: string; fetch: () => Promise<
     file: 'cpi.json',
     url: 'https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000501',
     fetch: cpi,
+  },
+  population: {
+    file: 'population.json',
+    url: 'https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1710015501',
+    fetch: population,
   },
 };
 

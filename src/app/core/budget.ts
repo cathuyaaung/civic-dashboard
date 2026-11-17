@@ -24,7 +24,7 @@ export interface BudgetCategory {
   share: number;
   /** Actual spending in dollars for every year, aligned to BudgetSummary.years. */
   series: (number | null)[];
-  /** Dollars in the first year with data (what `change` is measured from); null if none. */
+  /** Dollars in the comparison year (what `change` is measured from); null if none. */
   baseline: number | null;
   /** Fractional change from `baseline` to `year`; null if no baseline. */
   change: number | null;
@@ -33,6 +33,8 @@ export interface BudgetCategory {
 export interface BudgetSummary {
   year: number;
   firstYear: number;
+  /** Year changes are measured against: the year before `year`, or null if none. */
+  compareYear: number | null;
   years: number[];
   /** Dollars. Sum of the categories shown. */
   total: number;
@@ -99,13 +101,18 @@ export function categoryColor(line: string): CategoryColor {
 const label = (line: string) =>
   line.replace(/ services$/i, '').replace(/^Social and family$/, 'Social & family');
 
-/** First positive value up to and including index `to`: the base for "change since". */
-function baselineOf(series: (number | null)[], to: number): number | null {
-  return series.slice(0, to + 1).find((v): v is number => v !== null && v > 0) ?? null;
+/**
+ * Value in the comparison year, if positive. Changes are measured against the
+ * previous year, not the first year in the data: any fixed start year is
+ * arbitrary, and the long view is shown by the trend line instead.
+ */
+function baselineOf(series: (number | null)[], compare: number): number | null {
+  const v = compare < 0 ? null : series[compare];
+  return v != null && v > 0 ? v : null;
 }
 
-function change(series: (number | null)[], to: number): number | null {
-  const from = baselineOf(series, to);
+function change(series: (number | null)[], to: number, compare: number): number | null {
+  const from = baselineOf(series, compare);
   const end = series[to];
   return from === null || end == null ? null : end / from - 1;
 }
@@ -168,6 +175,7 @@ function yearIndex(data: BudgetData, year: number | undefined, what: string): nu
 /** Ranks lines for one year and works out shares, baselines and changes. */
 function summarize(lines: LineSeries[], years: number[], idx: number, excluded = 0): BudgetSummary {
   const total = lines.reduce((sum, r) => sum + (r.series[idx] ?? 0), 0);
+  const compare = idx - 1;
   const totals = sumSeries(
     lines.map((r) => r.series),
     years.length,
@@ -181,8 +189,8 @@ function summarize(lines: LineSeries[], years: number[], idx: number, excluded =
         amount,
         share: total ? amount / total : 0,
         series: r.series,
-        baseline: baselineOf(r.series, idx),
-        change: change(r.series, idx),
+        baseline: baselineOf(r.series, compare),
+        change: change(r.series, idx, compare),
       };
     })
     .sort((a, b) => b.amount - a.amount);
@@ -190,10 +198,11 @@ function summarize(lines: LineSeries[], years: number[], idx: number, excluded =
   return {
     year: years[idx],
     firstYear: years[0],
+    compareYear: compare >= 0 ? years[compare] : null,
     years,
     total,
-    totalBaseline: baselineOf(totals, idx),
-    totalChange: change(totals, idx),
+    totalBaseline: baselineOf(totals, compare),
+    totalChange: change(totals, idx, compare),
     excluded,
     categories,
   };
@@ -278,6 +287,7 @@ export function foldSmallCategories(summary: BudgetSummary, minShare = 0.005): B
   if (small.length < 2) return summary.categories;
 
   const idx = summary.years.indexOf(summary.year);
+  const compare = summary.compareYear === null ? -1 : summary.years.indexOf(summary.compareYear);
   const series = summary.years.map((_, i) =>
     small.every((c) => c.series[i] === null)
       ? null
@@ -292,8 +302,8 @@ export function foldSmallCategories(summary: BudgetSummary, minShare = 0.005): B
       amount,
       share: summary.total ? amount / summary.total : 0,
       series,
-      baseline: baselineOf(series, idx),
-      change: change(series, idx),
+      baseline: baselineOf(series, compare),
+      change: change(series, idx, compare),
     },
   ];
 }

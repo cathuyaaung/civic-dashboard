@@ -44,6 +44,7 @@ describe('foldSmallCategories', () => {
   const summary: BudgetSummary = {
     year: 2013,
     firstYear: 2012,
+    compareYear: 2012,
     years: [2012, 2013],
     total: 1000,
     totalBaseline: 902,
@@ -114,12 +115,13 @@ describe('summarizeSpending', () => {
     expect(s.categories[0].share).toBeCloseTo(0.75);
   });
 
-  it('measures change from the first year', () => {
+  it('measures change against the previous year', () => {
     const s = summarizeSpending(data);
-    expect(s.categories[0].change).toBeCloseTo(2); // 100 → 300
-    expect(s.categories[0].baseline).toBe(100_000);
-    expect(s.totalChange).toBeCloseTo(400 / 150 - 1);
-    expect(s.totalBaseline).toBe(150_000);
+    expect(s.compareYear).toBe(2013);
+    expect(s.categories[0].change).toBeCloseTo(1); // 2013: 150 → 2014: 300
+    expect(s.categories[0].baseline).toBe(150_000);
+    expect(s.totalChange).toBeCloseTo(400 / 200 - 1);
+    expect(s.totalBaseline).toBe(200_000);
   });
 
   it('can summarise an earlier year', () => {

@@ -63,12 +63,12 @@ export class Budget {
     return r?.categories.length ? r : undefined; // no revenue lines → no section
   });
 
-  /** Price change over the period, from the CPI, for the explanatory note. */
+  /** Price change since the comparison year, from the CPI, for the qualifier. */
   protected readonly priceRise = computed(() => {
     const s = this.spending();
-    if (!s || !this.cpi.hasValue()) return null;
+    if (!s?.compareYear || !this.cpi.hasValue()) return null;
     const v = this.cpi.value().values;
-    const from = v[String(s.firstYear)];
+    const from = v[String(s.compareYear)];
     const to = v[String(s.year)];
     return from && to ? to / from - 1 : null;
   });
@@ -79,9 +79,9 @@ export class Budget {
     if (!s) return '';
     if (!this.isReal()) return 'Dollars as recorded each year';
     const rise = this.priceRise();
-    return rise === null
-      ? `In ${s.year} dollars`
-      : `In ${s.year} dollars · prices rose ${Math.round(rise * 100)}% since ${s.firstYear}`;
+    if (rise === null) return `In ${s.year} dollars`;
+    const pct = Math.abs(rise) < 0.1 ? (rise * 100).toFixed(1) : Math.round(rise * 100);
+    return `In ${s.year} dollars · prices rose ${pct}% vs ${s.compareYear}`;
   });
 
   /**

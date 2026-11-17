@@ -71,16 +71,22 @@ export class BudgetBreakdown {
 
   protected readonly top = computed(() => this.ranked()[0]);
 
+  /** "vs 2024": what every change on this screen is measured against. */
+  protected readonly vs = computed(() => {
+    const y = this.summary().compareYear;
+    return y === null ? 'vs previous year' : `vs ${y}`;
+  });
+
   /**
    * The second tile. Spending: the fastest-growing service. Revenue: property
-   * taxes — what residents pay directly, and steadier than the development
-   * charge lines, whose percentage swings off a small 2012 base mean little.
+   * taxes — what residents pay directly, and steadier than lines like
+   * development charges or recoveries, which swing a lot from year to year.
    */
   protected readonly focus = computed(() => {
     const rows = this.ranked();
     if (this.kind() === 'revenue') {
       const tax = rows.find((c) => c.line === 'Property taxes');
-      return tax ? { label: `Property taxes since ${this.summary().firstYear}`, row: tax } : null;
+      return tax ? { label: `Property taxes ${this.vs()}`, row: tax } : null;
     }
     const fastest = rows
       .filter((c) => c.line !== 'Other' && c.change !== null)
@@ -88,7 +94,7 @@ export class BudgetBreakdown {
         (best, c) => (!best || (c.change ?? 0) > (best.change ?? 0) ? c : best),
         undefined,
       );
-    return fastest ? { label: 'Fastest growing', row: fastest } : null;
+    return fastest ? { label: `Fastest growing ${this.vs()}`, row: fastest } : null;
   });
 
   protected readonly caption = computed(

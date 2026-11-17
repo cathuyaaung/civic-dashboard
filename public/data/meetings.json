@@ -469,9 +469,9 @@
       "start": "2026-12-17T13:00:00",
       "location": "Council Chambers, Civic Centre, 2nd Floor",
       "cancelled": false,
-      "url": null,
-      "agendaPdf": null,
-      "agendaHtml": null
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=6575fe47-c615-4060-a1ab-72e0cdde7308&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=92663",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=6575fe47-c615-4060-a1ab-72e0cdde7308&Agenda=Agenda&lang=English"
     },
     {
       "id": "0398b5da-7b52-4860-8472-767d00c7c193",
