@@ -9,3 +9,18 @@ A civic dashboard for Mississauga Ward 11 — answering three questions for a re
 Built as a single-user portfolio project: no accounts, no backend database initially, just public open data surfaced clearly.
 
 Full design notes: https://claude.ai/artifact/2LZe1n7yDJTr4KZJmAimUw
+
+## Running locally
+
+Requires Node.js 22.22+, 24.15+ or 26+.
+
+```sh
+npm ci          # install dependencies
+npm start       # dev server at http://localhost:4200
+npm test        # unit tests (Vitest)
+npm run data    # refresh public/data/ from City of Mississauga open data
+```
+
+The app reads only the files in `public/data/`, which are committed, so `npm run data` is needed only to pull newer data.
+
+Data: City of Mississauga Open Data (ward boundaries, consolidated statement of operations, active development applications) and the city's eSCRIBE meetings portal.

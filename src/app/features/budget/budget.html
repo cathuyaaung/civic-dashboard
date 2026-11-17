@@ -1,0 +1,114 @@
+<h2>Where my money goes</h2>
+
+@switch (status()) {
+  @case ('loading') {
+    <p class="muted">Loading budget data…</p>
+  }
+  @case ('error') {
+    <p class="error">Couldn't load budget data. Run <code>npm run data</code> to fetch it.</p>
+  }
+  @default {
+    @if (inflationAvailable()) {
+      <div class="mode-bar">
+        <div class="segmented" role="group" aria-label="How to show past amounts">
+          <button
+            type="button"
+            [attr.aria-pressed]="mode() === 'actual'"
+            (click)="mode.set('actual')"
+          >
+            Actual dollars
+          </button>
+          <button type="button" [attr.aria-pressed]="mode() === 'real'" (click)="mode.set('real')">
+            Adjusted for inflation
+          </button>
+        </div>
+        <p class="mode-note muted">{{ modeNote() }}</p>
+      </div>
+    }
+
+    @if (flow(); as f) {
+      <div
+        class="flow"
+        role="img"
+        [attr.aria-label]="
+          'In ' +
+          f.year +
+          ' the City took in ' +
+          money(f.in) +
+          ' and spent ' +
+          money(f.out) +
+          (f.diff >= 0
+            ? ', leaving ' + money(f.diff) + ' for new infrastructure and reserves.'
+            : ', ' + money(-f.diff) + ' more than it took in.')
+        "
+      >
+        <p class="flow-title">{{ f.year }} at a glance</p>
+        <div class="flow-row">
+          <span class="flow-label">Money in</span>
+          <span class="flow-track">
+            <span class="flow-bar in" [style.width.%]="f.inPct"></span>
+          </span>
+          <span class="flow-value">{{ money(f.in) }}</span>
+        </div>
+        <div class="flow-row">
+          <span class="flow-label">Money out</span>
+          <span class="flow-track">
+            <span class="flow-bar out" [style.width.%]="f.outPct"></span>
+            @if (f.diff > 0) {
+              <span class="flow-gap" [style.width.%]="f.gapPct"></span>
+            }
+          </span>
+          <span class="flow-value">{{ money(f.out) }}</span>
+        </div>
+        <p class="flow-caption">
+          @if (f.diff >= 0) {
+            <span class="flow-key" aria-hidden="true"></span>
+            <strong>{{ money(f.diff) }}</strong> left over for new roads, buildings and savings
+          } @else {
+            <strong>{{ money(-f.diff) }}</strong> more spent than taken in
+          }
+        </p>
+      </div>
+    }
+
+    @if (spending(); as s) {
+      <section class="section" aria-labelledby="spending-heading">
+        <h3 id="spending-heading">Where the money goes</h3>
+        <app-budget-breakdown [summary]="s" kind="spending" [isReal]="isReal()" />
+      </section>
+    }
+
+    @if (revenue(); as r) {
+      <section class="section" aria-labelledby="revenue-heading">
+        <h3 id="revenue-heading">Where the money comes from</h3>
+        <app-budget-breakdown
+          [summary]="r"
+          kind="revenue"
+          [isReal]="isReal()"
+          [qualifier]="r.excluded > 0 ? 'cash only' : ''"
+          [info]="nonCashInfo()"
+        />
+      </section>
+    }
+  }
+}
+
+<p class="source muted">
+  Source:
+  <a href="https://data.mississauga.ca" target="_blank" rel="noopener"
+    >City of Mississauga Open Data</a
+  >, Consolidated Statement of Operations 2012–2025
+  @if (fetchedAt()?.budget; as at) {
+    · fetched {{ at | date: 'mediumDate' }}
+  }
+  @if (inflationAvailable()) {
+    · Inflation:
+    <a
+      href="https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000501"
+      target="_blank"
+      rel="noopener"
+      >Statistics Canada, table 18-10-0005-01</a
+    >
+    (CPI, Toronto)
+  }
+</p>

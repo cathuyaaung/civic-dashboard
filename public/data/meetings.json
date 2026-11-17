@@ -1,0 +1,687 @@
+{
+  "timeZone": "America/Toronto",
+  "from": "2026-10-18",
+  "to": "2027-02-15",
+  "meetings": [
+    {
+      "id": "07d4f43b-7226-43a7-9fd6-dbdbffec75b8",
+      "name": "Mississauga Appeals and Property Standards Committee",
+      "start": "2026-10-20T09:30:00",
+      "location": "Online Video Conference",
+      "cancelled": false,
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=07d4f43b-7226-43a7-9fd6-dbdbffec75b8&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=90862",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=07d4f43b-7226-43a7-9fd6-dbdbffec75b8&Agenda=Agenda&lang=English"
+    },
+    {
+      "id": "475fdc63-02b1-4ae5-902b-353135e03a6b",
+      "name": "ADJOURNED Mississauga Appeals and Property Standards Com",
+      "start": "2026-10-22T09:30:00",
+      "location": "Online Video Conference",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "8a899e88-ff27-4255-92d7-191d3cac0351",
+      "name": "Committee of Adjustment",
+      "start": "2026-10-22T13:00:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=8a899e88-ff27-4255-92d7-191d3cac0351&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=92065",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=8a899e88-ff27-4255-92d7-191d3cac0351&Agenda=Agenda&lang=English"
+    },
+    {
+      "id": "5f4eecf9-f5cd-4a80-882d-06ab5deb491c",
+      "name": "Committee of Adjustment",
+      "start": "2026-10-22T15:30:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=5f4eecf9-f5cd-4a80-882d-06ab5deb491c&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=91955",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=5f4eecf9-f5cd-4a80-882d-06ab5deb491c&Agenda=Agenda&lang=English"
+    },
+    {
+      "id": "fea5c208-0dea-44aa-a154-9c261d77e3a3",
+      "name": "CANCELLED Mississauga Appeals and Property Standards",
+      "start": "2026-10-29T09:30:00",
+      "location": "Online Video Conference",
+      "cancelled": true,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "5d59f544-a2b7-43db-9021-f1566971b4e2",
+      "name": "Committee of Adjustment",
+      "start": "2026-10-29T13:00:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=5d59f544-a2b7-43db-9021-f1566971b4e2&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=92137",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=5d59f544-a2b7-43db-9021-f1566971b4e2&Agenda=Agenda&lang=English"
+    },
+    {
+      "id": "bd4b9df4-6c3a-4c85-92ab-e6c2f7e6fb30",
+      "name": "Mississauga Appeals and Property Standards Committee",
+      "start": "2026-11-05T09:30:00",
+      "location": "Online Video Conference",
+      "cancelled": false,
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=bd4b9df4-6c3a-4c85-92ab-e6c2f7e6fb30&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=92141",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=bd4b9df4-6c3a-4c85-92ab-e6c2f7e6fb30&Agenda=Agenda&lang=English"
+    },
+    {
+      "id": "7c33334e-ba45-4871-b13b-42a388b834a2",
+      "name": "Committee of Adjustment",
+      "start": "2026-11-05T13:00:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=7c33334e-ba45-4871-b13b-42a388b834a2&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=92204",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=7c33334e-ba45-4871-b13b-42a388b834a2&Agenda=Agenda&lang=English"
+    },
+    {
+      "id": "025101ce-498d-4a51-ab93-26f3ae7495d0",
+      "name": "Mississauga Appeals and Property Standards Committee",
+      "start": "2026-11-12T09:30:00",
+      "location": "Online Video Conference",
+      "cancelled": false,
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=025101ce-498d-4a51-ab93-26f3ae7495d0&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=92145",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=025101ce-498d-4a51-ab93-26f3ae7495d0&Agenda=Agenda&lang=English"
+    },
+    {
+      "id": "96fe3d6e-7d92-4b7f-8213-0696db22264a",
+      "name": "Committee of Adjustment",
+      "start": "2026-11-12T13:00:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=96fe3d6e-7d92-4b7f-8213-0696db22264a&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=92400",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=96fe3d6e-7d92-4b7f-8213-0696db22264a&Agenda=Agenda&lang=English"
+    },
+    {
+      "id": "76ee2619-127f-4acd-ab10-1c626fd4a2f6",
+      "name": "Inaugural Council",
+      "start": "2026-11-16T19:00:00",
+      "location": "Living Arts Centre - Hammerson Hall",
+      "cancelled": false,
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=76ee2619-127f-4acd-ab10-1c626fd4a2f6&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=92415",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=76ee2619-127f-4acd-ab10-1c626fd4a2f6&Agenda=Agenda&lang=English"
+    },
+    {
+      "id": "1db77deb-af8a-4b0d-aae8-a21725b0fab5",
+      "name": "General Committee",
+      "start": "2026-11-18T09:30:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=1db77deb-af8a-4b0d-aae8-a21725b0fab5&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=92485",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=1db77deb-af8a-4b0d-aae8-a21725b0fab5&Agenda=Agenda&lang=English"
+    },
+    {
+      "id": "ebd3c8f2-08a5-45fb-baeb-e0fd38e24fff",
+      "name": "ADJOURNED Mississauga Appeals and Property Standards Com",
+      "start": "2026-11-19T09:30:00",
+      "location": "Civic Centre, Clerks Department, 2nd Floor Boardroom",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "a597c976-abcb-4bc5-b9cb-046d9f9e9798",
+      "name": "Committee of Adjustment",
+      "start": "2026-11-19T13:00:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=a597c976-abcb-4bc5-b9cb-046d9f9e9798&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=92561",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=a597c976-abcb-4bc5-b9cb-046d9f9e9798&Agenda=Agenda&lang=English"
+    },
+    {
+      "id": "70b80aac-64b8-489f-944e-146cf8366eac",
+      "name": "CANCELLED Road Safety Committee",
+      "start": "2026-11-23T09:30:00",
+      "location": "Online Video Conference",
+      "cancelled": true,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "84efe6a9-8980-4d9c-94b1-95dda4301cba",
+      "name": "Port Credit Heritage Conservation District Subcommittee",
+      "start": "2026-11-23T09:30:00",
+      "location": "Online Video Conference",
+      "cancelled": false,
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=84efe6a9-8980-4d9c-94b1-95dda4301cba&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=92494",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=84efe6a9-8980-4d9c-94b1-95dda4301cba&Agenda=Agenda&lang=English"
+    },
+    {
+      "id": "cf21a41c-5d8d-4547-bb7e-72b0bf4d77b6",
+      "name": "Facility Accessibility Design Subcommittee",
+      "start": "2026-11-23T13:30:00",
+      "location": "Online Video Conference",
+      "cancelled": false,
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=cf21a41c-5d8d-4547-bb7e-72b0bf4d77b6&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=92500",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=cf21a41c-5d8d-4547-bb7e-72b0bf4d77b6&Agenda=Agenda&lang=English"
+    },
+    {
+      "id": "3823b957-7fa7-4f86-9be7-866f8281503a",
+      "name": "Planning and Development Committee",
+      "start": "2026-11-23T13:30:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "533f5f1c-0d9d-48ea-824b-ba4c55ee7388",
+      "name": "Facility Accessibility Design Subcommittee",
+      "start": "2026-11-23T13:30:00",
+      "location": "Online Video Conference",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "85a9b016-5f08-40d8-b219-1791fbf43e50",
+      "name": "Heritage Advisory Committee",
+      "start": "2026-11-24T09:30:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=85a9b016-5f08-40d8-b219-1791fbf43e50&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=92644",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=85a9b016-5f08-40d8-b219-1791fbf43e50&Agenda=Agenda&lang=English"
+    },
+    {
+      "id": "ef23f3b6-3516-4f3d-9e71-36b946cdeb77",
+      "name": "Mississauga Appeals and Property Standards Committee",
+      "start": "2026-11-24T09:30:00",
+      "location": "Online Video Conference",
+      "cancelled": false,
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=ef23f3b6-3516-4f3d-9e71-36b946cdeb77&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=92153",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=ef23f3b6-3516-4f3d-9e71-36b946cdeb77&Agenda=Agenda&lang=English"
+    },
+    {
+      "id": "3a40ca7a-232e-4882-a752-87cdeaa20eac",
+      "name": "Meadowvale Village HCD Subcommittee",
+      "start": "2026-11-24T15:00:00",
+      "location": "Online Video Conference",
+      "cancelled": false,
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=3a40ca7a-232e-4882-a752-87cdeaa20eac&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=92510",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=3a40ca7a-232e-4882-a752-87cdeaa20eac&Agenda=Agenda&lang=English"
+    },
+    {
+      "id": "b8d22c9c-7009-4716-ba20-fe9fb33fa902",
+      "name": "Council",
+      "start": "2026-11-25T09:30:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "262eea76-f072-4dfc-b855-104adb108ff4",
+      "name": "Budget Committee",
+      "start": "2026-11-25T13:30:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "20b0578d-badf-4a9f-97c9-66bbec785e46",
+      "name": "Mississauga School Traffic Safety Action Committee",
+      "start": "2026-11-25T17:00:00",
+      "location": "Online Video Conference",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "80ababbe-c8c8-4608-b5fe-9c22ad5495f0",
+      "name": "Mississauga Appeals and Property Standards Committee",
+      "start": "2026-11-26T09:30:00",
+      "location": "Online Video Conference",
+      "cancelled": false,
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=80ababbe-c8c8-4608-b5fe-9c22ad5495f0&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=92157",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=80ababbe-c8c8-4608-b5fe-9c22ad5495f0&Agenda=Agenda&lang=English"
+    },
+    {
+      "id": "62862197-c451-43f3-8576-5b879f980cf3",
+      "name": "Committee of Adjustment",
+      "start": "2026-11-26T13:00:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=62862197-c451-43f3-8576-5b879f980cf3&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=92031",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=62862197-c451-43f3-8576-5b879f980cf3&Agenda=Agenda&lang=English"
+    },
+    {
+      "id": "b7eb376e-46ff-4f8c-b9aa-bae84d332f7f",
+      "name": "Accessibility Advisory Committee",
+      "start": "2026-11-30T14:00:00",
+      "location": "Online Video Conference",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "ee529e93-a421-43c5-9ba4-160570662390",
+      "name": "CANCELLED - Environmental Action Committee",
+      "start": "2026-12-01T09:30:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": true,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "d8c4e11f-2519-404e-8e28-ff5f15494188",
+      "name": "Mississauga Appeals and Property Standards Committee",
+      "start": "2026-12-01T09:30:00",
+      "location": "Online Video Conference",
+      "cancelled": false,
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=d8c4e11f-2519-404e-8e28-ff5f15494188&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=91800",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=d8c4e11f-2519-404e-8e28-ff5f15494188&Agenda=Agenda&lang=English"
+    },
+    {
+      "id": "96c2fdad-84b7-4501-951a-2992c443e1df",
+      "name": "CANCELLED Stormwater Advisory Committee",
+      "start": "2026-12-01T13:00:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": true,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "510580c9-e23e-4433-a67a-b36baa76484a",
+      "name": "CANCELLED - Transit Advisory Committee",
+      "start": "2026-12-01T18:00:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": true,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "99eb38b3-9636-43c2-9730-d7e933b46378",
+      "name": "General Committee",
+      "start": "2026-12-02T09:30:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "ba1ae29c-19a6-4bb1-a3dd-db067d65cbd1",
+      "name": "Combating Racism, Discrimination and Hatred Advisory Com",
+      "start": "2026-12-02T18:45:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "404cb9fb-a9bb-4461-8efc-bf5ae8fb1155",
+      "name": "Mississauga Appeals and Property Standards Committee",
+      "start": "2026-12-03T09:30:00",
+      "location": "Online Video Conference",
+      "cancelled": false,
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=404cb9fb-a9bb-4461-8efc-bf5ae8fb1155&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=92408",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=404cb9fb-a9bb-4461-8efc-bf5ae8fb1155&Agenda=Agenda&lang=English"
+    },
+    {
+      "id": "10da054e-46d9-45e8-ad73-2ebe9f098acc",
+      "name": "Committee of Adjustment",
+      "start": "2026-12-03T13:00:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=10da054e-46d9-45e8-ad73-2ebe9f098acc&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=92377",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=10da054e-46d9-45e8-ad73-2ebe9f098acc&Agenda=Agenda&lang=English"
+    },
+    {
+      "id": "6b775b25-4958-4506-809a-58a8922fb9e4",
+      "name": "Committee of Adjustment",
+      "start": "2026-12-03T15:30:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=6b775b25-4958-4506-809a-58a8922fb9e4&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=92322",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=6b775b25-4958-4506-809a-58a8922fb9e4&Agenda=Agenda&lang=English"
+    },
+    {
+      "id": "d56f466d-6d52-4e02-9477-208a0fb1c94b",
+      "name": "Audit Committee",
+      "start": "2026-12-07T09:30:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "683163fb-85fb-4f5e-955d-a70c4de36307",
+      "name": "Port Credit Heritage Conservation District Subcommittee",
+      "start": "2026-12-07T09:30:00",
+      "location": "Online Video Conference",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "36043955-d0aa-488f-ab2a-aa1abeb51e8e",
+      "name": "Planning and Development Committee",
+      "start": "2026-12-07T13:30:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "5294e132-e3a7-423a-8b8f-92896ba7e910",
+      "name": "Heritage Advisory Committee",
+      "start": "2026-12-08T09:30:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "c1d2bec0-5376-4433-b98a-b269e4f7ef8b",
+      "name": "Governance Committee",
+      "start": "2026-12-08T13:00:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "a71abeb3-3e0d-44e3-89c7-674e1f63af63",
+      "name": "Meadowvale Village HCD Subcommittee",
+      "start": "2026-12-08T15:00:00",
+      "location": "Online Video Conference",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "4e6368eb-29a3-43b6-bc8f-f4e151d3f0e4",
+      "name": "Council",
+      "start": "2026-12-09T09:30:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "45d9520c-0584-4f54-820c-b7c59ece58e8",
+      "name": "Mississauga Appeals and Property Standards Committee",
+      "start": "2026-12-10T09:30:00",
+      "location": "Online Video Conference",
+      "cancelled": false,
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=45d9520c-0584-4f54-820c-b7c59ece58e8&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=92404",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=45d9520c-0584-4f54-820c-b7c59ece58e8&Agenda=Agenda&lang=English"
+    },
+    {
+      "id": "6e9770ba-b6e8-43a4-b79c-1e6b40ec8cd5",
+      "name": "Committee of Adjustment",
+      "start": "2026-12-10T13:00:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=6e9770ba-b6e8-43a4-b79c-1e6b40ec8cd5&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=92342",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=6e9770ba-b6e8-43a4-b79c-1e6b40ec8cd5&Agenda=Agenda&lang=English"
+    },
+    {
+      "id": "6575fe47-c615-4060-a1ab-72e0cdde7308",
+      "name": "Committee of Adjustment",
+      "start": "2026-12-17T13:00:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=6575fe47-c615-4060-a1ab-72e0cdde7308&lang=English",
+      "agendaPdf": "https://pub-mississauga.escribemeetings.com/FileStream.ashx?DocumentId=92663",
+      "agendaHtml": "https://pub-mississauga.escribemeetings.com/Meeting.aspx?Id=6575fe47-c615-4060-a1ab-72e0cdde7308&Agenda=Agenda&lang=English"
+    },
+    {
+      "id": "0398b5da-7b52-4860-8472-767d00c7c193",
+      "name": "General Committee",
+      "start": "2027-01-06T09:30:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "c8b4f759-63ea-4262-934b-c4c42d3ee686",
+      "name": "Mississauga Appeals and Property Standards Committee",
+      "start": "2027-01-07T09:30:00",
+      "location": "Online Video Conference",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "fa2f60d1-3454-4874-80d4-1b075df15c67",
+      "name": "Planning and Development Committee",
+      "start": "2027-01-11T13:30:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "10608648-a975-4cfc-8275-5574ae9bb386",
+      "name": "Council",
+      "start": "2027-01-13T09:30:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "4741a780-48b9-4f75-9ce4-17515be18097",
+      "name": "Mississauga Appeals and Property Standards Committee",
+      "start": "2027-01-14T09:30:00",
+      "location": "Online Video Conference",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "6315c730-1891-4b09-bf5b-96f2d7489766",
+      "name": "Committee of Adjustment",
+      "start": "2027-01-14T13:00:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "56421e95-1bfb-4792-abbb-14f4766f96dd",
+      "name": "Budget Committee",
+      "start": "2027-01-18T09:30:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "6f6a3356-df0c-4ef6-830c-b9135fda3965",
+      "name": "Budget Committee",
+      "start": "2027-01-19T09:30:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "9ae11cb9-430f-4e98-a130-faaa100a460e",
+      "name": "Budget Committee",
+      "start": "2027-01-20T09:30:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "955b04f4-83b3-4154-9323-4a9d2918db6d",
+      "name": "Mississauga Appeals and Property Standards Committee",
+      "start": "2027-01-21T09:30:00",
+      "location": "Online Video Conference",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "d047cecd-12a4-4a5e-8523-6eea5b3fdf2d",
+      "name": "Committee of Adjustment",
+      "start": "2027-01-21T13:00:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "c5afd71d-5d55-43eb-99fa-24a2f19dffbf",
+      "name": "Budget Committee",
+      "start": "2027-01-26T09:30:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "b8797922-cd44-4ef4-809a-8ae1cfb59758",
+      "name": "Mississauga Appeals and Property Standards Committee",
+      "start": "2027-01-26T09:30:00",
+      "location": "Online Video Conference",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "37c954e6-3326-4d39-bc19-27f6b2e368b2",
+      "name": "General Committee",
+      "start": "2027-01-27T09:30:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "edddc810-e336-4917-82a5-331c0941b952",
+      "name": "Planning and Development Committee",
+      "start": "2027-02-01T13:30:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "27c2dde2-440c-45ee-91ca-75ebee48ef9b",
+      "name": "Council",
+      "start": "2027-02-03T09:30:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "b507e963-39c1-45ae-82e4-60171dfecc8c",
+      "name": "Committee of Adjustment",
+      "start": "2027-02-04T13:00:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "bef75b81-9eb5-4e23-b6aa-e835270eedae",
+      "name": "Special Council",
+      "start": "2027-02-10T09:00:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "1b618064-20ac-4d72-8517-be4bd3b7e9bc",
+      "name": "General Committee",
+      "start": "2027-02-10T09:30:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "4bdec388-f695-49be-a2ef-8be92cf5f013",
+      "name": "Mississauga Appeals and Property Standards Committee",
+      "start": "2027-02-11T09:30:00",
+      "location": "Online Video Conference",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    },
+    {
+      "id": "cf2524fb-5f23-4dcb-9e36-b9f389a05f1c",
+      "name": "Committee of Adjustment",
+      "start": "2027-02-11T13:00:00",
+      "location": "Council Chambers, Civic Centre, 2nd Floor",
+      "cancelled": false,
+      "url": null,
+      "agendaPdf": null,
+      "agendaHtml": null
+    }
+  ]
+}

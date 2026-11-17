@@ -1,0 +1,151 @@
+@let s = summary();
+@let t = text();
+
+<div class="overview">
+  <app-donut
+    [slices]="slices()"
+    [centreValue]="money(s.total)"
+    [centreLabel]="t.centre + ' ' + s.year"
+    [format]="money"
+    [(active)]="active"
+    [ariaLabel]="'Share of ' + s.year + ' city ' + t.whole"
+  />
+  <div class="headline">
+    <p class="eyebrow">
+      City of Mississauga {{ t.noun | lowercase }}, {{ s.year }}
+      @if (qualifier()) {
+        · {{ qualifier() }}
+      }
+      @if (info()) {
+        <app-info-tip [text]="info()" [label]="'About ' + (t.noun | lowercase) + ' figures'" />
+      }
+    </p>
+    @if (top(); as top) {
+      <p class="big">
+        <span class="cents">{{ cents(top.share) }}¢</span>
+        of every dollar
+      </p>
+      <p class="big-sub">{{ t.verb }} {{ top.label | lowercase }}</p>
+    }
+    <div class="tiles">
+      <app-stat-tile
+        [label]="t.noun + ' ' + vs() + afterInflation()"
+        [value]="signedMoney(delta(s.total, s.totalBaseline))"
+        [detail]="
+          money(s.totalBaseline ?? 0) +
+          ' → ' +
+          money(s.total) +
+          ' · ' +
+          signedPercent(s.totalChange)
+        "
+      />
+      @if (focus(); as f) {
+        @if (kind() === 'revenue') {
+          <app-stat-tile
+            [label]="f.label + afterInflation()"
+            [value]="signedMoney(delta(f.row.amount, f.row.baseline))"
+            [detail]="
+              money(f.row.baseline ?? 0) +
+              ' → ' +
+              money(f.row.amount) +
+              ' · ' +
+              signedPercent(f.row.change)
+            "
+          />
+        } @else {
+          <app-stat-tile
+            [label]="f.label + afterInflation()"
+            [value]="signedPercent(f.row.change)"
+            [detail]="f.row.label + ': ' + money(f.row.baseline ?? 0) + ' → ' + money(f.row.amount)"
+          />
+        }
+      }
+    </div>
+  </div>
+</div>
+
+<div class="ranked">
+  <div class="row head" aria-hidden="true">
+    <span class="name">{{ t.item }}</span>
+    <span class="bar-cell">{{ s.year }} {{ t.noun | lowercase }}</span>
+    <span class="spark">Trend {{ s.firstYear }}–{{ s.year }}</span>
+    <span class="change">{{ vs() }}</span>
+  </div>
+  <ol [attr.aria-label]="t.noun + ' by ' + t.items + ', ' + s.year">
+    @for (c of ranked(); track c.line) {
+      <li
+        class="row"
+        [class.active]="active() === c.line"
+        [class.dim]="active() !== null && active() !== c.line"
+        (pointerenter)="active.set(c.line)"
+        (pointerleave)="active.set(null)"
+      >
+        <span class="name">{{ c.label }}</span>
+        <span class="bar-cell">
+          <span
+            class="bar"
+            [style.--fill]="c.share / maxShare()"
+            [style.background]="c.color.fill"
+            aria-hidden="true"
+          ></span>
+          <span class="value">
+            {{ money(c.amount) }} <span class="muted">· {{ share(c.share) }}</span>
+          </span>
+        </span>
+        <app-sparkline
+          class="spark"
+          [values]="c.series"
+          [labels]="s.years"
+          [format]="money"
+          [color]="c.color.fill"
+          [ariaLabel]="
+            c.label +
+            ', ' +
+            s.firstYear +
+            ' to ' +
+            s.year +
+            ', change ' +
+            vs() +
+            ' ' +
+            signedPercent(c.change)
+          "
+        />
+        <span class="change">
+          <span class="change-money">{{ signedMoney(delta(c.amount, c.baseline)) }}</span>
+          <span class="change-pct muted">{{ signedPercent(c.change) }}</span>
+        </span>
+      </li>
+    }
+  </ol>
+</div>
+
+<details>
+  <summary>Every year, by {{ t.items }}</summary>
+  <div class="table-scroll">
+    <table>
+      <caption>
+        {{
+          caption()
+        }}
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">{{ t.item }}</th>
+          @for (y of s.years; track y) {
+            <th scope="col">{{ y }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (c of s.categories; track c.line) {
+          <tr>
+            <th scope="row">{{ c.label }}</th>
+            @for (v of c.series; track $index) {
+              <td>{{ v === null ? '–' : (v / 1e6).toFixed(1) }}</td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</details>

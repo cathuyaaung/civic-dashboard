@@ -1,0 +1,169 @@
+<h2>What's happening</h2>
+
+<div class="tiles">
+  <app-stat-tile
+    label="Active development applications"
+    [value]="applicationsStatus() === 'resolved' ? '' + applications().length : '–'"
+    [detail]="'in Ward ' + wardNumber"
+  />
+  @if (largest(); as l) {
+    <app-stat-tile
+      label="Largest proposal"
+      [value]="(l.ResidentialUnits | number) + ' homes'"
+      [detail]="l.SiteAddress"
+    />
+  }
+  @if (nextCouncil(); as c) {
+    <app-stat-tile
+      label="Next Council meeting"
+      [value]="(c.start | date: 'MMM d') ?? ''"
+      [detail]="formatMeetingTime(c.start)"
+    />
+  }
+</div>
+
+<section aria-labelledby="applications-heading">
+  <h3 id="applications-heading">Development applications in Ward {{ wardNumber }}</h3>
+
+  @switch (applicationsStatus()) {
+    @case ('loading') {
+      <p class="muted">Loading development applications…</p>
+    }
+    @case ('error') {
+      <p class="error">
+        Couldn't load development applications. Run <code>npm run data</code> to fetch them.
+      </p>
+    }
+    @default {
+      @if (wards(); as w) {
+        <app-ward-map
+          [ward]="wardNumber"
+          [wards]="w"
+          [applications]="mapApplications()"
+          [ariaLabel]="'Map of Ward ' + wardNumber + ' with development applications'"
+        />
+        <p class="legend muted">
+          <span class="swatch ward" aria-hidden="true"></span> Ward {{ wardNumber }}
+          <span class="swatch dot small" aria-hidden="true"></span>
+          <span class="swatch dot large" aria-hidden="true"></span>
+          Application — larger circle, more proposed homes
+        </p>
+      }
+
+      @if (applications().length) {
+        <ul class="applications">
+          @for (a of applications(); track a.ApplicationNumber) {
+            <li>
+              <div class="app-head">
+                <span class="address">{{ a.SiteAddress }}</span>
+                <span class="date muted">Submitted {{ a.SubmissionDate | date: 'MMM y' }}</span>
+              </div>
+              <p class="description">{{ a.ApplicationDescription }}</p>
+              <p class="facts muted">
+                <span class="type">{{ a.type }}</span>
+                <span>{{ a.ApplicationNumber }}</span>
+                @if (a.ResidentialUnits) {
+                  <span>{{ a.ResidentialUnits | number }} homes</span>
+                }
+                <span>{{ a.uses }}</span>
+                <span>Status: {{ a.ApplicationStatus }}</span>
+                @if (a.point) {
+                  <button type="button" class="link" (click)="showOnMap(a.ApplicationNumber)">
+                    Show on map
+                  </button>
+                }
+              </p>
+            </li>
+          }
+        </ul>
+        <p class="note muted">
+          Statuses are shown as the city publishes them; the dataset doesn't define “Withheld”. Some
+          sites have more than one application, so home counts can overlap.
+        </p>
+      } @else {
+        <p class="muted">No active applications in Ward {{ wardNumber }}.</p>
+      }
+    }
+  }
+  <p class="source muted">
+    Source:
+    <a href="https://data.mississauga.ca" target="_blank" rel="noopener"
+      >City of Mississauga Open Data</a
+    >, Active Development Applications and Ward Boundaries
+    @if (fetchedAt()?.applications; as at) {
+      · fetched {{ at | date: 'mediumDate' }}
+    }
+  </p>
+</section>
+
+<section aria-labelledby="meetings-heading">
+  <h3 id="meetings-heading">Upcoming council meetings</h3>
+
+  <div class="scope" role="group" aria-label="Which meetings">
+    <button type="button" [attr.aria-pressed]="scope() === 'key'" (click)="setScope('key')">
+      Council &amp; main committees
+    </button>
+    <button type="button" [attr.aria-pressed]="scope() === 'all'" (click)="setScope('all')">
+      All meetings
+    </button>
+  </div>
+
+  @switch (meetingsStatus()) {
+    @case ('loading') {
+      <p class="muted">Loading meetings…</p>
+    }
+    @case ('error') {
+      <p class="error">Couldn't load meetings. Run <code>npm run data</code> to fetch them.</p>
+    }
+    @default {
+      @if (meetings().length) {
+        <ul class="meetings">
+          @for (m of meetings(); track m.id) {
+            <li>
+              <span class="when">{{ formatMeetingTime(m.start) }}</span>
+              <span class="what">
+                <span class="name">{{ m.name }}</span>
+                @if (m.location) {
+                  <span class="muted">{{ m.location }}</span>
+                }
+              </span>
+              <span class="links">
+                @if (m.agendaHtml ?? m.url; as href) {
+                  <a [href]="href" target="_blank" rel="noopener">Agenda</a>
+                  @if (m.agendaPdf) {
+                    <span class="muted"> · </span>
+                    <a [href]="m.agendaPdf" target="_blank" rel="noopener">PDF</a>
+                  }
+                } @else {
+                  <span class="muted">Agenda not out yet</span>
+                }
+              </span>
+            </li>
+          }
+        </ul>
+        @if (hiddenMeetings() > 0) {
+          <button type="button" class="more" (click)="expanded.set(true)">
+            Show {{ hiddenMeetings() }} more
+          </button>
+        }
+      } @else {
+        <p class="muted">
+          No upcoming meetings in the downloaded data. Run <code>npm run data</code> to refresh it.
+        </p>
+      }
+    }
+  }
+  <p class="note muted">
+    Meetings are city-wide; agendas are usually published about a week ahead. Times are Mississauga
+    time.
+  </p>
+  <p class="source muted">
+    Source:
+    <a href="https://pub-mississauga.escribemeetings.com" target="_blank" rel="noopener"
+      >City of Mississauga eSCRIBE meetings</a
+    >
+    @if (fetchedAt()?.meetings; as at) {
+      · fetched {{ at | date: 'mediumDate' }}
+    }
+  </p>
+</section>

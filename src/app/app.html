@@ -1,5 +1,20 @@
 <main class="shell">
-  <h1>Ward 11 Civic Dashboard</h1>
-  <p>Under construction — see <code>docs/design-notes.md</code> for the plan.</p>
-  <router-outlet></router-outlet>
+  <header>
+    <div class="title-row">
+      <h1>Ward 11 Civic Dashboard</h1>
+      <app-theme-toggle />
+    </div>
+    <nav aria-label="Sections">
+      <a routerLink="/councillor" routerLinkActive="active" ariaCurrentWhenActive="page">
+        Who's deciding
+      </a>
+      <a routerLink="/budget" routerLinkActive="active" ariaCurrentWhenActive="page">
+        Where my money goes
+      </a>
+      <a routerLink="/activity" routerLinkActive="active" ariaCurrentWhenActive="page">
+        What's happening
+      </a>
+    </nav>
+  </header>
+  <router-outlet />
 </main>
