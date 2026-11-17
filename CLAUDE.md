@@ -51,8 +51,10 @@ Early scaffold stage. `ng new` scaffold is in place and builds clean. No
 data-fetching, parsing, or real UI screens exist yet. See "Next steps" at
 the bottom of `docs/design-notes.md` for what's actually queued next. Data
 sources for all three pillars were confirmed on 2026-11-17 (see "Confirmed
-data sources" in the design notes); next up is the screen-by-screen spec and
-a data-pull script.
+data sources" in the design notes). `npm run data` (`scripts/fetch-data.mts`)
+pulls them into `public/data/`, which is committed; the app reads those files
+with `httpResource`, never the city's APIs directly. The "Who's deciding"
+screen exists; budget and ward-activity screens are next.
 
 ## Working style notes
 

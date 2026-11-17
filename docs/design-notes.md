@@ -88,4 +88,5 @@ Repo name settled: `civic-dashboard`. A friendlier project/display name is still
 3. ~~Find non-PDF budget data.~~ Done — Consolidated Statement of Operations CSV, 2012–2025, by function. Service-area detail beyond that is PDF-only after 2019.
 4. ~~Check for a council agenda feed.~~ Done — eSCRIBE JSON endpoint for meetings. By-laws still have no feed.
 5. Screen-by-screen spec for the three pillars (councillor info, budget breakdown, ward activity), now that the data shapes are known.
-6. A Node/TypeScript data-pull script that fetches the datasets above into `public/data/*.json` for the static build.
+6. ~~Data-pull script.~~ Done — `npm run data` (`scripts/fetch-data.mts`) writes wards, budget, development applications and meetings into `public/data/`.
+7. ~~First screen.~~ Done — "Who's deciding" councillor card at `/councillor`, read from `wards.geojson`. Committees aren't in any dataset yet.

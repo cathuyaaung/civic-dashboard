@@ -1,0 +1,47 @@
+<section aria-labelledby="councillor-heading">
+  <h2 id="councillor-heading">Who's deciding</h2>
+
+  @switch (status()) {
+    @case ('loading') {
+      <p class="muted">Loading ward data…</p>
+    }
+    @case ('error') {
+      <p class="error">Couldn't load ward data. Run <code>npm run data</code> to fetch it.</p>
+    }
+    @default {
+      @if (ward(); as w) {
+        <article class="card">
+          @if (photo(); as src) {
+            <img [src]="src" [alt]="'Photo of ' + w.COUNCILLOR" width="120" height="165" />
+          }
+          <div>
+            <p class="role">Ward {{ wardNumber }} Councillor</p>
+            <h3>{{ w.COUNCILLOR }}</h3>
+            <dl>
+              @if (phone(); as p) {
+                <dt>Phone</dt>
+                <dd>
+                  <a [href]="p.href">{{ p.display }}</a>
+                </dd>
+              }
+              <dt>Profile</dt>
+              <dd><a [href]="w.URL" target="_blank" rel="noopener">mississauga.ca</a></dd>
+            </dl>
+          </div>
+        </article>
+      } @else {
+        <p class="error">Ward {{ wardNumber }} isn't in the ward data.</p>
+      }
+    }
+  }
+
+  <p class="source muted">
+    Source:
+    <a href="https://data.mississauga.ca" target="_blank" rel="noopener">
+      City of Mississauga Open Data</a
+    >, Ward Boundaries
+    @if (fetchedAt(); as at) {
+      · fetched {{ at | date: 'mediumDate' }}
+    }
+  </p>
+</section>
