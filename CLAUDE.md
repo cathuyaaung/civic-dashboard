@@ -58,6 +58,14 @@ a v1 requirement — resist scope creep back toward "the whole city."
   supporting detail, not the main event. Things cannot look dull. Follow the
   dataviz skill's rules so "visual" stays honest (no misleading charts,
   accessible colours, a table view behind every chart).
+- **No footnotes — easy to read is the whole point.** (Standing decision,
+  2026-11-17.) A resident should understand a screen without reading notes
+  at the bottom. Put explanations where the eye already is: in labels
+  ("Property taxes (City's share)"), short qualifiers in headings ("cash
+  only"), or in the visual itself (e.g. a money-in vs money-out bar instead
+  of a paragraph about surpluses). Nuance that truly doesn't fit goes in a
+  small on-demand ⓘ info tip (`app-info-tip`), used sparingly — never a
+  notes list. Source attribution at the bottom is fine.
 
 ## Current state
 

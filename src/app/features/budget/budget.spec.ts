@@ -106,8 +106,8 @@ describe('Budget', () => {
 
     const [actual, real] = el.querySelectorAll<HTMLButtonElement>('.segmented button');
     expect(real.getAttribute('aria-pressed')).toBe('true');
-    expect(el.querySelector('.mode-note')?.textContent).toContain(
-      '(prices rose 50% from 2012 to 2025).',
+    expect(el.querySelector('.mode-note')?.textContent?.trim()).toBe(
+      'In 2025 dollars · prices rose 50% since 2012',
     );
     expect(el.querySelector('caption')?.textContent).toContain('2025 dollars');
 
@@ -145,9 +145,11 @@ describe('Budget', () => {
 
     const revenue = el.querySelector('[aria-labelledby="revenue-heading"]')!;
     expect(revenue.querySelector('h3')?.textContent).toBe('Where the money comes from');
+    // Explanations live in labels, not footnotes.
     expect(revenue.querySelector('.big-sub')?.textContent?.trim()).toBe(
-      'comes from property taxes',
+      "comes from property taxes (city's share)",
     );
+    expect(el.querySelector('.notes')).toBeNull();
     expect(revenue.querySelector('app-donut .c-label')?.textContent?.trim()).toBe(
       'received in 2025',
     );
@@ -155,7 +157,21 @@ describe('Budget', () => {
     expect(revenue.querySelectorAll('app-stat-tile')[1].textContent).toContain(
       'Property taxes since 2012',
     );
-    expect(revenue.querySelector('.notes')?.textContent).toContain('$34M of non-cash revenue');
+    // Non-cash exclusion: a short qualifier, with the reason behind an ⓘ.
+    expect(revenue.querySelector('.eyebrow')?.textContent).toContain('cash only');
+    expect(revenue.querySelector('app-info-tip [role="tooltip"]')?.textContent).toContain(
+      '$34M of roads, parks and pipes',
+    );
+
+    // Money in vs money out, drawn: $755M + $301M in, $693M out.
+    const flow = el.querySelector('.flow')!;
+    expect([...flow.querySelectorAll('.flow-value')].map((v) => v.textContent?.trim())).toEqual([
+      '$1.06B',
+      '$693M',
+    ]);
+    expect(flow.querySelector('.flow-caption')?.textContent?.replace(/\s+/g, ' ').trim()).toBe(
+      '$363M left over for new roads, buildings and savings',
+    );
   });
 
   it('omits the revenue section when there are no revenue lines', async () => {

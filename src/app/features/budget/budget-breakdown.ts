@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, input, signal } from '@an
 import { BudgetSummary, categoryColor, foldSmallCategories } from '../../core/budget';
 import { money, share, signedMoney, signedPercent } from '../../core/format';
 import { Donut, DonutSlice } from '../../shared/donut';
+import { InfoTip } from '../../shared/info-tip';
 import { Sparkline } from '../../shared/sparkline';
 import { StatTile } from '../../shared/stat-tile';
 
@@ -34,7 +35,7 @@ const TEXT = {
  */
 @Component({
   selector: 'app-budget-breakdown',
-  imports: [LowerCasePipe, Donut, Sparkline, StatTile],
+  imports: [LowerCasePipe, Donut, InfoTip, Sparkline, StatTile],
   templateUrl: './budget-breakdown.html',
   styleUrl: './budget-breakdown.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -44,9 +45,13 @@ export class BudgetBreakdown {
   readonly kind = input.required<BreakdownKind>();
   /** True when amounts are inflation-adjusted; only changes labels. */
   readonly isReal = input(false);
+  /** Short qualifier shown after the heading, e.g. "cash only". */
+  readonly qualifier = input('');
+  /** Optional one-or-two-sentence explanation behind an ⓘ next to the heading. */
+  readonly info = input('');
 
   protected readonly text = computed(() => TEXT[this.kind()]);
-  protected readonly afterInflation = computed(() => (this.isReal() ? ' (after inflation)' : ''));
+  protected readonly afterInflation = computed(() => (this.isReal() ? ', after inflation' : ''));
 
   /** Ranked rows with colours; tiny ones folded into "Other". The table keeps them all. */
   protected readonly ranked = computed(() =>

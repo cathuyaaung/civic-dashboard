@@ -159,7 +159,7 @@ describe('summarizeRevenue', () => {
   it('groups lines into plain-language sources, ranked largest first', () => {
     const r = summarizeRevenue(data);
     expect(r.categories.map((c) => [c.label, c.amount])).toEqual([
-      ['Property taxes', 740_000], // includes payments in lieu
+      ["Property taxes (City's share)", 740_000], // includes payments in lieu
       ['Fees and charges', 250_000],
       ['Development charges and reserve funds', 110_000],
       ['Other', 5_000], // unknown lines can't vanish

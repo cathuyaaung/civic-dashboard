@@ -26,48 +26,68 @@
       </div>
     }
 
+    @if (flow(); as f) {
+      <div
+        class="flow"
+        role="img"
+        [attr.aria-label]="
+          'In ' +
+          f.year +
+          ' the City took in ' +
+          money(f.in) +
+          ' and spent ' +
+          money(f.out) +
+          (f.diff >= 0
+            ? ', leaving ' + money(f.diff) + ' for new infrastructure and reserves.'
+            : ', ' + money(-f.diff) + ' more than it took in.')
+        "
+      >
+        <p class="flow-title">{{ f.year }} at a glance</p>
+        <div class="flow-row">
+          <span class="flow-label">Money in</span>
+          <span class="flow-track">
+            <span class="flow-bar in" [style.width.%]="f.inPct"></span>
+          </span>
+          <span class="flow-value">{{ money(f.in) }}</span>
+        </div>
+        <div class="flow-row">
+          <span class="flow-label">Money out</span>
+          <span class="flow-track">
+            <span class="flow-bar out" [style.width.%]="f.outPct"></span>
+            @if (f.diff > 0) {
+              <span class="flow-gap" [style.width.%]="f.gapPct"></span>
+            }
+          </span>
+          <span class="flow-value">{{ money(f.out) }}</span>
+        </div>
+        <p class="flow-caption">
+          @if (f.diff >= 0) {
+            <span class="flow-key" aria-hidden="true"></span>
+            <strong>{{ money(f.diff) }}</strong> left over for new roads, buildings and savings
+          } @else {
+            <strong>{{ money(-f.diff) }}</strong> more spent than taken in
+          }
+        </p>
+      </div>
+    }
+
     @if (spending(); as s) {
       <section class="section" aria-labelledby="spending-heading">
         <h3 id="spending-heading">Where the money goes</h3>
         <app-budget-breakdown [summary]="s" kind="spending" [isReal]="isReal()" />
-        <ul class="notes muted">
-          <li>
-            Spending on all City services from every funding source (property tax, transit fares,
-            user fees, grants), not just property tax.
-          </li>
-          <li>
-            Your property tax bill also pays the Region of Peel (including police) and school
-            boards. That spending isn't shown here.
-          </li>
-        </ul>
       </section>
     }
 
     @if (revenue(); as r) {
       <section class="section" aria-labelledby="revenue-heading">
         <h3 id="revenue-heading">Where the money comes from</h3>
-        <app-budget-breakdown [summary]="r" kind="revenue" [isReal]="isReal()" />
-        <ul class="notes muted">
-          @if (spending(); as s) {
-            <li>
-              In {{ r.year }} the City took in {{ money(r.total) }} and spent {{ money(s.total) }}.
-              That gap isn't profit: the spending figures count the yearly wear on roads, buildings
-              and vehicles rather than the cost of building or buying them, so most of the
-              difference pays for new capital projects or goes into reserves.
-            </li>
-          }
-          @if (r.excluded > 0) {
-            <li>
-              Leaves out {{ money(r.excluded) }} of non-cash revenue in {{ r.year }}: roads, parks
-              and pipes that developers hand over to the City, and one-time accounting gains.
-            </li>
-          }
-          <li>
-            “Property taxes” is the City's share only, including payments in lieu of taxes from
-            other governments. Development charges and reserve funds rise and fall with construction
-            activity, so their change since {{ r.firstYear }} swings widely.
-          </li>
-        </ul>
+        <app-budget-breakdown
+          [summary]="r"
+          kind="revenue"
+          [isReal]="isReal()"
+          [qualifier]="r.excluded > 0 ? 'cash only' : ''"
+          [info]="nonCashInfo()"
+        />
       </section>
     }
   }

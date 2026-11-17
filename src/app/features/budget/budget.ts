@@ -73,19 +73,46 @@ export class Budget {
     return from && to ? to / from - 1 : null;
   });
 
-  /** One-line explanation of the current dollar mode. */
+  /** Short qualifier beside the switch: what the numbers are in. */
   protected readonly modeNote = computed(() => {
     const s = this.spending();
     if (!s) return '';
-    if (!this.isReal()) return 'Dollars as recorded each year, not adjusted for inflation.';
+    if (!this.isReal()) return 'Dollars as recorded each year';
     const rise = this.priceRise();
-    const prices =
-      rise === null
-        ? ''
-        : ` (prices rose ${Math.round(rise * 100)}% from ${s.firstYear} to ${s.year})`;
+    return rise === null
+      ? `In ${s.year} dollars`
+      : `In ${s.year} dollars · prices rose ${Math.round(rise * 100)}% since ${s.firstYear}`;
+  });
+
+  /**
+   * Money in vs money out for the latest year, scaled to the larger of the two.
+   * The difference is drawn, not footnoted.
+   */
+  protected readonly flow = computed(() => {
+    const s = this.spending();
+    const r = this.revenue();
+    if (!s || !r) return undefined;
+    const max = Math.max(s.total, r.total) || 1;
+    const diff = r.total - s.total;
+    return {
+      year: s.year,
+      in: r.total,
+      out: s.total,
+      diff,
+      inPct: (r.total / max) * 100,
+      outPct: (s.total / max) * 100,
+      gapPct: (Math.abs(diff) / max) * 100,
+    };
+  });
+
+  /** Why revenue says "cash only" — behind an ⓘ, not a footnote. */
+  protected readonly nonCashInfo = computed(() => {
+    const r = this.revenue();
+    if (!r?.excluded) return '';
     return (
-      `Past years shown in ${s.year} dollars, using Statistics Canada's consumer price ` +
-      `index for Toronto${prices}.`
+      `Leaves out ${money(r.excluded)} of roads, parks and pipes that developers built and ` +
+      `handed over to the City in ${r.year}. The City's books count them as revenue, but no ` +
+      `money changes hands.`
     );
   });
 

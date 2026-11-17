@@ -11,7 +11,15 @@
     [ariaLabel]="'Share of ' + s.year + ' city ' + t.whole"
   />
   <div class="headline">
-    <p class="eyebrow">City of Mississauga {{ t.noun | lowercase }}, {{ s.year }}</p>
+    <p class="eyebrow">
+      City of Mississauga {{ t.noun | lowercase }}, {{ s.year }}
+      @if (qualifier()) {
+        · {{ qualifier() }}
+      }
+      @if (info()) {
+        <app-info-tip [text]="info()" [label]="'About ' + (t.noun | lowercase) + ' figures'" />
+      }
+    </p>
     @if (top(); as top) {
       <p class="big">
         <span class="cents">{{ cents(top.share) }}¢</span>
@@ -21,7 +29,7 @@
     }
     <div class="tiles">
       <app-stat-tile
-        [label]="t.noun + ' change since ' + s.firstYear + afterInflation()"
+        [label]="t.noun + ' since ' + s.firstYear + afterInflation()"
         [value]="signedMoney(delta(s.total, s.totalBaseline))"
         [detail]="
           money(s.totalBaseline ?? 0) +

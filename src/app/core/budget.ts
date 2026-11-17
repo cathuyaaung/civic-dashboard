@@ -258,7 +258,8 @@ export function summarizeRevenue(data: BudgetData, year?: number): BudgetSummary
   }
   const lines = [...groups].map(([group, series]) => ({
     line: group,
-    label: group,
+    // Say it in the label, not a footnote: the bill also funds the Region and schools.
+    label: group === 'Property taxes' ? "Property taxes (City's share)" : group,
     series: sumSeries(series, data.years.length),
   }));
   const excluded = nonCash.reduce((t, r) => t + (toDollars(r.actual[idx]) ?? 0), 0);
