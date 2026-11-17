@@ -10,6 +10,40 @@
     }
     @default {
       @if (summary(); as s) {
+        @if (inflationAvailable()) {
+          <div class="mode-bar">
+            <div class="segmented" role="group" aria-label="How to show past amounts">
+              <button
+                type="button"
+                [attr.aria-pressed]="mode() === 'actual'"
+                (click)="mode.set('actual')"
+              >
+                Actual dollars
+              </button>
+              <button
+                type="button"
+                [attr.aria-pressed]="mode() === 'real'"
+                (click)="mode.set('real')"
+              >
+                Adjusted for inflation
+              </button>
+            </div>
+            <p class="mode-note muted">
+              @if (isReal()) {
+                Past years shown in {{ s.year }} dollars, using Statistics Canada's consumer price
+                index for Toronto
+                @if (priceRise() !== null) {
+                  (prices rose {{ signedPercent(priceRise()) }} from {{ s.firstYear }} to
+                  {{ s.year }})
+                }
+                .
+              } @else {
+                Dollars as spent each year, not adjusted for inflation.
+              }
+            </p>
+          </div>
+        }
+
         <div class="overview">
           <app-donut
             [slices]="slices()"
@@ -30,15 +64,23 @@
             }
             <div class="tiles">
               <app-stat-tile
-                [label]="'Total since ' + s.firstYear"
-                [value]="signedPercent(s.totalChange)"
-                detail="not adjusted for inflation"
+                [label]="
+                  'Spending change since ' + s.firstYear + (isReal() ? ' (after inflation)' : '')
+                "
+                [value]="signedMoney(delta(s.total, s.totalBaseline))"
+                [detail]="
+                  money(s.totalBaseline ?? 0) +
+                  ' → ' +
+                  money(s.total) +
+                  ' · ' +
+                  signedPercent(s.totalChange)
+                "
               />
               @if (fastest(); as f) {
                 <app-stat-tile
-                  label="Fastest growing"
+                  [label]="'Fastest growing' + (isReal() ? ' (after inflation)' : '')"
                   [value]="signedPercent(f.change)"
-                  [detail]="f.label + ' since ' + s.firstYear"
+                  [detail]="f.label + ': ' + money(f.baseline ?? 0) + ' → ' + money(f.amount)"
                 />
               }
             </div>
@@ -50,7 +92,7 @@
             <span class="name">Service</span>
             <span class="bar-cell">{{ s.year }} spending</span>
             <span class="spark">Trend {{ s.firstYear }}–{{ s.year }}</span>
-            <span class="change">Change</span>
+            <span class="change">Since {{ s.firstYear }}</span>
           </div>
           <ol [attr.aria-label]="'Spending by service, ' + s.year">
             @for (c of ranked(); track c.line) {
@@ -89,7 +131,10 @@
                     signedPercent(c.change)
                   "
                 />
-                <span class="change">{{ signedPercent(c.change) }}</span>
+                <span class="change">
+                  <span class="change-money">{{ signedMoney(delta(c.amount, c.baseline)) }}</span>
+                  <span class="change-pct muted">{{ signedPercent(c.change) }}</span>
+                </span>
               </li>
             }
           </ol>
@@ -100,7 +145,11 @@
           <div class="table-scroll">
             <table>
               <caption>
-                Actual spending, millions of dollars
+                @if (isReal()) {
+                  Spending, millions of {{ s.year }} dollars (adjusted for inflation)
+                } @else {
+                  Spending, millions of dollars as spent
+                }
               </caption>
               <thead>
                 <tr>
@@ -143,8 +192,18 @@
     <a href="https://data.mississauga.ca" target="_blank" rel="noopener"
       >City of Mississauga Open Data</a
     >, Consolidated Statement of Operations 2012–2025
-    @if (fetchedAt(); as at) {
+    @if (fetchedAt()?.budget; as at) {
       · fetched {{ at | date: 'mediumDate' }}
+    }
+    @if (inflationAvailable()) {
+      · Inflation:
+      <a
+        href="https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000501"
+        target="_blank"
+        rel="noopener"
+        >Statistics Canada, table 18-10-0005-01</a
+      >
+      (CPI, Toronto)
     }
   </p>
 </section>

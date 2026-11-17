@@ -24,7 +24,9 @@ export interface SpendingCategory {
   share: number;
   /** Actual spending in dollars for every year, aligned to SpendingSummary.years. */
   series: (number | null)[];
-  /** Fractional change from the first year with data to `year`; null if no baseline. */
+  /** Dollars in the first year with data (what `change` is measured from); null if none. */
+  baseline: number | null;
+  /** Fractional change from `baseline` to `year`; null if no baseline. */
   change: number | null;
 }
 
@@ -34,8 +36,17 @@ export interface SpendingSummary {
   years: number[];
   /** Dollars. Sum of the categories shown. */
   total: number;
+  totalBaseline: number | null;
   totalChange: number | null;
   categories: SpendingCategory[];
+}
+
+/** Shape of public/data/cpi.json: annual CPI by year ("2012": 121.8). */
+export interface CpiData {
+  geography: string;
+  series: string;
+  table: string;
+  values: Record<string, number>;
 }
 
 /**
@@ -80,10 +91,48 @@ export function categoryColor(line: string): CategoryColor {
 const label = (line: string) =>
   line.replace(/ services$/i, '').replace(/^Social and family$/, 'Social & family');
 
+/** First positive value up to and including index `to`: the base for "change since". */
+function baselineOf(series: (number | null)[], to: number): number | null {
+  return series.slice(0, to + 1).find((v): v is number => v !== null && v > 0) ?? null;
+}
+
 function change(series: (number | null)[], to: number): number | null {
-  const from = series.find((v) => v !== null && v > 0);
+  const from = baselineOf(series, to);
   const end = series[to];
-  return from == null || end == null ? null : end / from - 1;
+  return from === null || end == null ? null : end / from - 1;
+}
+
+/** Latest year with any actual expense figure. */
+export function latestActualYear(data: BudgetData): number | undefined {
+  const i = data.years.findLastIndex((_, i) =>
+    data.rows.some((r) => r.section === 'Expenses' && r.actual[i] != null),
+  );
+  return i < 0 ? undefined : data.years[i];
+}
+
+/**
+ * Restates every figure in `toYear` dollars using a price index:
+ * value × CPI[toYear] / CPI[year]. Returns null if the index is missing any
+ * year needed, so callers can fall back to actual dollars.
+ */
+export function adjustForInflation(
+  data: BudgetData,
+  cpi: Record<string, number>,
+  toYear: number,
+): BudgetData | null {
+  const target = cpi[String(toYear)];
+  const factors = data.years.map((y) => {
+    const base = cpi[String(y)];
+    return target && base ? target / base : null;
+  });
+  if (factors.some((f) => f === null)) return null;
+  const scale = (vals: (number | null)[]) =>
+    vals.map((v, i) => (v === null ? null : v * factors[i]!));
+  return {
+    ...data,
+    unit: `thousands of ${toYear} CAD`,
+    rows: data.rows.map((r) => ({ ...r, actual: scale(r.actual), budget: scale(r.budget) })),
+  };
 }
 
 /**
@@ -95,10 +144,7 @@ export function summarizeSpending(data: BudgetData, year?: number): SpendingSumm
     (r) => r.section === 'Expenses' && !NON_SERVICE_LINES.has(r.line),
   );
 
-  const idx =
-    year === undefined
-      ? data.years.findLastIndex((_, i) => expenses.some((r) => r.actual[i] != null))
-      : data.years.indexOf(year);
+  const idx = data.years.indexOf(year ?? latestActualYear(data) ?? NaN);
   if (idx < 0) throw new Error(`No spending data for ${year ?? 'any year'}`);
 
   const toDollars = (v: number | null) => (v === null ? null : v * THOUSANDS);
@@ -119,6 +165,7 @@ export function summarizeSpending(data: BudgetData, year?: number): SpendingSumm
         amount,
         share: total ? amount / total : 0,
         series: r.series,
+        baseline: baselineOf(r.series, idx),
         change: change(r.series, idx),
       };
     })
@@ -129,6 +176,7 @@ export function summarizeSpending(data: BudgetData, year?: number): SpendingSumm
     firstYear: data.years[0],
     years: data.years,
     total,
+    totalBaseline: baselineOf(totals, idx),
     totalChange: change(totals, idx),
     categories,
   };
@@ -163,6 +211,7 @@ export function foldSmallCategories(
       amount,
       share: summary.total ? amount / summary.total : 0,
       series,
+      baseline: baselineOf(series, idx),
       change: change(series, idx),
     },
   ];

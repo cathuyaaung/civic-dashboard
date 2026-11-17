@@ -17,6 +17,10 @@ const ARCGIS = 'https://services6.arcgis.com/hM5ymMLbxIyWTjn2/arcgis/rest/servic
 const BUDGET_CSV =
   'https://www.arcgis.com/sharing/rest/content/items/e86fa318eae44578a64de5507b6a4c1e/data';
 const ESCRIBE = 'https://pub-mississauga.escribemeetings.com';
+const STATCAN_WDS = 'https://www150.statcan.gc.ca/t1/wds/rest';
+const CPI_TABLE = 18100005;
+/** Geography 16 = Toronto, Ontario; product 2 = All-items. */
+const CPI_TORONTO_ALL_ITEMS = '16.2.0.0.0.0.0.0.0.0';
 
 // Meetings window, relative to today.
 const MEETINGS_DAYS_BACK = 30;
@@ -190,6 +194,35 @@ async function meetings(): Promise<Json> {
   return { timeZone: 'America/Toronto', from: ymd(start), to: ymd(end), meetings: items };
 }
 
+/**
+ * Statistics Canada CPI, annual average, all-items, Toronto (table 18-10-0005-01,
+ * vector v41695186). Toronto is the closest published index to Mississauga.
+ * Used to restate past spending in the latest year's dollars.
+ */
+async function cpi(): Promise<Json> {
+  const res = await get(`${STATCAN_WDS}/getDataFromCubePidCoordAndLatestNPeriods`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify([
+      { productId: CPI_TABLE, coordinate: CPI_TORONTO_ALL_ITEMS, latestN: 30 },
+    ]),
+  });
+  const [series] = (await res.json()) as {
+    status: string;
+    object?: { vectorDataPoint?: { refPer: string; value: number }[] };
+  }[];
+  const points = series?.object?.vectorDataPoint;
+  if (series?.status !== 'SUCCESS' || !points?.length) {
+    throw new Error(`StatCan CPI: ${series?.status ?? 'no response'}`);
+  }
+  return {
+    geography: 'Toronto, Ontario',
+    series: 'Consumer Price Index, all-items, annual average (2002=100)',
+    table: '18-10-0005-01',
+    values: Object.fromEntries(points.map((p) => [p.refPer.slice(0, 4), p.value])),
+  };
+}
+
 // --- Runner ------------------------------------------------------------------
 
 const sources: Record<string, { file: string; url: string; fetch: () => Promise<Json> }> = {
@@ -201,6 +234,11 @@ const sources: Record<string, { file: string; url: string; fetch: () => Promise<
   },
   budget: { file: 'budget.json', url: BUDGET_CSV, fetch: budget },
   meetings: { file: 'meetings.json', url: ESCRIBE, fetch: meetings },
+  cpi: {
+    file: 'cpi.json',
+    url: 'https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000501',
+    fetch: cpi,
+  },
 };
 
 await mkdir(OUT_DIR, { recursive: true });

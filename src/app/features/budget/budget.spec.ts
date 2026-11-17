@@ -2,7 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ApplicationRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { BudgetData } from '../../core/budget';
+import { BudgetData, CpiData } from '../../core/budget';
 import { Budget } from './budget';
 
 const row = (line: string, actual: number[]) => ({
@@ -22,6 +22,14 @@ const data: BudgetData = {
     row('Social and family services', [524, 407]),
     row('Total Expenses', [383_537, 693_421]),
   ],
+};
+
+// Prices up 50% from 2012 to 2025.
+const cpi: CpiData = {
+  geography: 'Toronto, Ontario',
+  series: 'CPI',
+  table: '18-10-0005-01',
+  values: { '2012': 100, '2025': 150 },
 };
 
 describe('Budget', () => {
@@ -48,6 +56,7 @@ describe('Budget', () => {
   it('leads with the total and ranks services, folding tiny ones into Other', async () => {
     const el = await render((h) => {
       h.expectOne('data/budget.json').flush(data);
+      h.expectOne('data/cpi.json').flush(cpi);
       h.expectOne('data/meta.json').flush({ ward: 11, sources: {} });
     });
 
@@ -63,7 +72,8 @@ describe('Budget', () => {
 
     const names = [...el.querySelectorAll('ol .name')].map((n) => n.textContent?.trim());
     expect(names).toEqual(['Transportation', 'Protection', 'Other (health, social & family)']);
-    expect(el.querySelector('ol .change')?.textContent?.trim()).toBe('+81%');
+    expect(el.querySelector('ol .change-money')?.textContent?.trim()).toBe('+$221M');
+    expect(el.querySelector('ol .change-pct')?.textContent?.trim()).toBe('+81%');
 
     // The full table still lists every category separately.
     const tableRows = [...el.querySelectorAll('tbody th')].map((t) => t.textContent?.trim());
@@ -73,6 +83,7 @@ describe('Budget', () => {
   it('links the list and the donut on hover', async () => {
     const el = await render((h) => {
       h.expectOne('data/budget.json').flush(data);
+      h.expectOne('data/cpi.json').flush(cpi);
       h.expectOne('data/meta.json').flush({ ward: 11, sources: {} });
     });
 
@@ -84,9 +95,42 @@ describe('Budget', () => {
     expect(el.querySelectorAll('ol li.dim').length).toBe(2);
   });
 
+  it('restates past years in today’s dollars when adjusted for inflation', async () => {
+    const el = await render((h) => {
+      h.expectOne('data/budget.json').flush(data);
+      h.expectOne('data/cpi.json').flush(cpi);
+      h.expectOne('data/meta.json').flush({ ward: 11, sources: {} });
+    });
+
+    const [actual, real] = el.querySelectorAll<HTMLButtonElement>('.segmented button');
+    expect(actual.getAttribute('aria-pressed')).toBe('true');
+
+    real.click();
+    await TestBed.inject(ApplicationRef).whenStable();
+
+    // Transportation: $274.6M in 2012 = $411.9M in 2025 dollars → $496M is +20%.
+    expect(el.querySelector('ol .change-pct')?.textContent?.trim()).toBe('+20%');
+    expect(el.querySelector('ol .change-money')?.textContent?.trim()).toBe('+$84M');
+    // 2025 itself is unchanged.
+    expect(el.querySelector('app-donut .c-value')?.textContent?.trim()).toBe('$693M');
+    expect(el.querySelector('.mode-note')?.textContent).toContain('prices rose +50%');
+    expect(el.querySelector('caption')?.textContent).toContain('2025 dollars');
+  });
+
+  it('hides the inflation switch when the price index is unavailable', async () => {
+    const el = await render((h) => {
+      h.expectOne('data/budget.json').flush(data);
+      h.expectOne('data/cpi.json').flush('', { status: 404, statusText: 'Not Found' });
+      h.expectOne('data/meta.json').flush({ ward: 11, sources: {} });
+    });
+    expect(el.querySelector('.segmented')).toBeNull();
+    expect(el.querySelector('ol .change-pct')?.textContent?.trim()).toBe('+81%');
+  });
+
   it('explains how to fix a missing data file', async () => {
     const el = await render((h) => {
       h.expectOne('data/budget.json').flush('', { status: 404, statusText: 'Not Found' });
+      h.expectOne('data/cpi.json').flush('', { status: 404, statusText: 'Not Found' });
       h.expectOne('data/meta.json').flush('', { status: 404, statusText: 'Not Found' });
     });
 

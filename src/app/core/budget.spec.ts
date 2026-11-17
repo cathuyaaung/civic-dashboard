@@ -1,4 +1,34 @@
-import { BudgetData, foldSmallCategories, SpendingSummary, summarizeSpending } from './budget';
+import {
+  adjustForInflation,
+  BudgetData,
+  foldSmallCategories,
+  latestActualYear,
+  SpendingSummary,
+  summarizeSpending,
+} from './budget';
+
+describe('adjustForInflation', () => {
+  const data: BudgetData = {
+    unit: 'thousands of CAD',
+    years: [2012, 2025],
+    rows: [{ section: 'Expenses', line: 'Roads', actual: [100, 150], budget: [null, 140] }],
+  };
+
+  it('restates every year in the target year’s dollars', () => {
+    const adj = adjustForInflation(data, { '2012': 100, '2025': 150 }, 2025)!;
+    expect(adj.rows[0].actual).toEqual([150, 150]); // flat in real terms
+    expect(adj.rows[0].budget).toEqual([null, 140]);
+    expect(adj.unit).toBe('thousands of 2025 CAD');
+  });
+
+  it('returns null when the index is missing a year', () => {
+    expect(adjustForInflation(data, { '2025': 150 }, 2025)).toBeNull();
+  });
+
+  it('finds the latest year with actuals', () => {
+    expect(latestActualYear(data)).toBe(2025);
+  });
+});
 
 describe('foldSmallCategories', () => {
   const cat = (label: string, share: number, series: (number | null)[]) => ({
@@ -7,6 +37,7 @@ describe('foldSmallCategories', () => {
     amount: series.at(-1) ?? 0,
     share,
     series,
+    baseline: series[0],
     change: null,
   });
   const summary: SpendingSummary = {
@@ -14,6 +45,7 @@ describe('foldSmallCategories', () => {
     firstYear: 2012,
     years: [2012, 2013],
     total: 1000,
+    totalBaseline: 902,
     totalChange: null,
     categories: [
       cat('Roads', 0.996, [900, 996]),
@@ -83,7 +115,9 @@ describe('summarizeSpending', () => {
   it('measures change from the first year', () => {
     const s = summarizeSpending(data);
     expect(s.categories[0].change).toBeCloseTo(2); // 100 → 300
+    expect(s.categories[0].baseline).toBe(100_000);
     expect(s.totalChange).toBeCloseTo(400 / 150 - 1);
+    expect(s.totalBaseline).toBe(150_000);
   });
 
   it('can summarise an earlier year', () => {

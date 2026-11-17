@@ -4,22 +4,27 @@
     "wards": {
       "file": "wards.geojson",
       "source": "https://services6.arcgis.com/hM5ymMLbxIyWTjn2/arcgis/rest/services/Ward_Boundaries/FeatureServer/2",
-      "fetchedAt": "2026-11-17T16:33:03.643Z"
+      "fetchedAt": "2026-11-17T16:51:20.556Z"
     },
     "developmentApplications": {
       "file": "development-applications.geojson",
       "source": "https://services6.arcgis.com/hM5ymMLbxIyWTjn2/arcgis/rest/services/Growth_Management_%E2%80%93_Active_Development_Applications/FeatureServer/0",
-      "fetchedAt": "2026-11-17T16:33:03.643Z"
+      "fetchedAt": "2026-11-17T16:51:20.556Z"
     },
     "budget": {
       "file": "budget.json",
       "source": "https://www.arcgis.com/sharing/rest/content/items/e86fa318eae44578a64de5507b6a4c1e/data",
-      "fetchedAt": "2026-11-17T16:33:03.643Z"
+      "fetchedAt": "2026-11-17T16:51:20.556Z"
     },
     "meetings": {
       "file": "meetings.json",
       "source": "https://pub-mississauga.escribemeetings.com",
-      "fetchedAt": "2026-11-17T16:33:03.643Z"
+      "fetchedAt": "2026-11-17T16:51:20.556Z"
+    },
+    "cpi": {
+      "file": "cpi.json",
+      "source": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000501",
+      "fetchedAt": "2026-11-17T16:51:20.556Z"
     }
   }
 }
