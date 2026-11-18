@@ -1,0 +1,95 @@
+@if (summary(); as s) {
+  @let pr = perResident();
+
+  <div class="headline">
+    <p class="eyebrow">
+      City of Mississauga population, {{ s.year }}
+      <app-info-tip [text]="sourceInfo()" label="About the population estimates" />
+    </p>
+    <p class="big">{{ count(s.people) }}</p>
+    <p class="big-sub">
+      @if (s.changePeople !== null && s.changePeople < 0) {
+        down {{ signedCount(s.changePeople) }} from {{ s.compareYear }}
+      } @else if (s.changePeople !== null) {
+        up {{ signedCount(s.changePeople) }} from {{ s.compareYear }}
+      } @else {
+        residents
+      }
+    </p>
+  </div>
+
+  <div class="tiles">
+    @if (s.change !== null) {
+      <app-stat-tile
+        [label]="'Population vs ' + s.compareYear"
+        [value]="signedPercent(s.change)"
+        [detail]="count(s.comparePeople ?? 0) + ' → ' + count(s.people)"
+      />
+    }
+    @if (s.sinceFirst !== null) {
+      <app-stat-tile
+        [label]="'Population since ' + s.firstYear"
+        [value]="signedPercent(s.sinceFirst)"
+        [detail]="signedCount(s.sinceFirstPeople) + ' residents since ' + s.firstYear"
+      />
+    }
+    @if (pr.value !== null) {
+      <app-stat-tile
+        [label]="'City spending per resident, ' + pr.year + afterInflation()"
+        [value]="dollars(pr.value)"
+        [detail]="
+          pr.compareValue
+            ? dollars(pr.compareValue) + ' in ' + pr.compareYear + ' · ' + signedPercent(pr.change)
+            : 'total city spending ÷ population'
+        "
+      />
+    }
+  </div>
+
+  <section class="chart" aria-labelledby="population-trend">
+    <h4 id="population-trend">Residents, {{ s.firstYear }}–{{ s.year }}</h4>
+    <app-line-chart [points]="chartPoints()" [format]="count" [ariaLabel]="chartLabel()" />
+  </section>
+
+  @if (perResidentPoints().length > 1) {
+    <section class="chart" aria-labelledby="per-resident-trend">
+      <h4 id="per-resident-trend">
+        Spending per resident{{ afterInflation() }}
+        <span class="chart-note">{{ perResidentPoints()[0].label }}–{{ pr.year }}</span>
+      </h4>
+      <app-line-chart
+        [points]="perResidentPoints()"
+        [format]="dollars"
+        [ariaLabel]="perResidentLabel()"
+      />
+    </section>
+  }
+
+  <div class="table-scroll">
+    <table>
+      <caption>
+        Population and city spending per resident{{
+          afterInflation()
+        }}, newest first
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">Year</th>
+          <th scope="col">Residents</th>
+          <th scope="col">Spending per resident</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of perResidentRows(); track r.year) {
+          <tr>
+            <th scope="row">{{ r.year }}</th>
+            <td>{{ count(r.people) }}</td>
+            <td>{{ r.perResident === null ? '–' : dollars(r.perResident) }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+} @else {
+  <p class="muted">No population estimates in the data.</p>
+}

@@ -1,0 +1,125 @@
+{
+  "note": "Derived from eSCRIBE posted minutes, 2026-01-01..2026-11-17. Surname-normalised. Unverified against official records.",
+  "rows": [
+    {
+      "n": "Fonseca",
+      "YES": 394,
+      "NO": 0,
+      "ABSTAIN": 0,
+      "ABSENT": 2,
+      "total": 396,
+      "cast": 394,
+      "pct": 100
+    },
+    {
+      "n": "Horneck",
+      "YES": 388,
+      "NO": 2,
+      "ABSTAIN": 1,
+      "ABSENT": 4,
+      "total": 395,
+      "cast": 391,
+      "pct": 99.23273657289002
+    },
+    {
+      "n": "Dasko",
+      "YES": 390,
+      "NO": 2,
+      "ABSTAIN": 0,
+      "ABSENT": 1,
+      "total": 393,
+      "cast": 392,
+      "pct": 99.48979591836735
+    },
+    {
+      "n": "Hart",
+      "YES": 378,
+      "NO": 0,
+      "ABSTAIN": 0,
+      "ABSENT": 15,
+      "total": 393,
+      "cast": 378,
+      "pct": 100
+    },
+    {
+      "n": "Reid",
+      "YES": 373,
+      "NO": 1,
+      "ABSTAIN": 2,
+      "ABSENT": 17,
+      "total": 393,
+      "cast": 376,
+      "pct": 99.20212765957447
+    },
+    {
+      "n": "Damerla",
+      "YES": 306,
+      "NO": 7,
+      "ABSTAIN": 27,
+      "ABSENT": 52,
+      "total": 392,
+      "cast": 340,
+      "pct": 90
+    },
+    {
+      "n": "McFadden",
+      "YES": 369,
+      "NO": 1,
+      "ABSTAIN": 4,
+      "ABSENT": 18,
+      "total": 392,
+      "cast": 374,
+      "pct": 98.66310160427807
+    },
+    {
+      "n": "Butt",
+      "YES": 370,
+      "NO": 2,
+      "ABSTAIN": 0,
+      "ABSENT": 13,
+      "total": 385,
+      "cast": 372,
+      "pct": 99.46236559139786
+    },
+    {
+      "n": "Tedjo",
+      "YES": 353,
+      "NO": 3,
+      "ABSTAIN": 3,
+      "ABSENT": 24,
+      "total": 383,
+      "cast": 359,
+      "pct": 98.32869080779945
+    },
+    {
+      "n": "Kovac",
+      "YES": 350,
+      "NO": 0,
+      "ABSTAIN": 0,
+      "ABSENT": 14,
+      "total": 364,
+      "cast": 350,
+      "pct": 100
+    },
+    {
+      "n": "Mahoney",
+      "YES": 221,
+      "NO": 0,
+      "ABSTAIN": 0,
+      "ABSENT": 48,
+      "total": 269,
+      "cast": 221,
+      "pct": 100
+    },
+    {
+      "n": "Parrish",
+      "YES": 168,
+      "NO": 0,
+      "ABSTAIN": 1,
+      "ABSENT": 48,
+      "total": 217,
+      "cast": 169,
+      "pct": 99.40828402366864
+    }
+  ]
+}

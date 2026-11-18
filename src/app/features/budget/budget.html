@@ -1,4 +1,4 @@
-<h2>Where my money goes</h2>
+<h2>Budget</h2>
 
 @switch (status()) {
   @case ('loading') {
@@ -72,23 +72,65 @@
     }
 
     @if (spending(); as s) {
-      <section class="section" aria-labelledby="spending-heading">
-        <h3 id="spending-heading">Where the money goes</h3>
-        <app-budget-breakdown [summary]="s" kind="spending" [isReal]="isReal()" />
-      </section>
-    }
+      @if (hasTabs()) {
+        <div class="tablist" role="tablist" aria-label="Which side of the budget">
+          @for (side of sides(); track side) {
+            <button
+              #tabButton
+              type="button"
+              role="tab"
+              [id]="side + '-heading'"
+              [attr.aria-controls]="side + '-panel'"
+              [attr.aria-selected]="activeSide() === side"
+              [attr.tabindex]="activeSide() === side ? 0 : -1"
+              (click)="select(side)"
+              (keydown)="onTabKeydown($event)"
+            >
+              {{ tabLabels[side] }}
+            </button>
+          }
+        </div>
 
-    @if (revenue(); as r) {
-      <section class="section" aria-labelledby="revenue-heading">
-        <h3 id="revenue-heading">Where the money comes from</h3>
-        <app-budget-breakdown
-          [summary]="r"
-          kind="revenue"
-          [isReal]="isReal()"
-          [qualifier]="r.excluded > 0 ? 'cash only' : ''"
-          [info]="nonCashInfo()"
-        />
-      </section>
+        @if (activeSide() === 'spending') {
+          <section
+            class="panel"
+            id="spending-panel"
+            role="tabpanel"
+            aria-labelledby="spending-heading"
+          >
+            <app-budget-breakdown [summary]="s" kind="spending" [isReal]="isReal()" />
+          </section>
+        } @else if (activeSide() === 'revenue' && revenue(); as r) {
+          <section
+            class="panel"
+            id="revenue-panel"
+            role="tabpanel"
+            aria-labelledby="revenue-heading"
+          >
+            <app-budget-breakdown
+              [summary]="r"
+              kind="revenue"
+              [isReal]="isReal()"
+              [qualifier]="r.excluded > 0 ? 'cash only' : ''"
+              [info]="nonCashInfo()"
+            />
+          </section>
+        } @else if (population(); as p) {
+          <section
+            class="panel"
+            id="demographics-panel"
+            role="tabpanel"
+            aria-labelledby="demographics-heading"
+          >
+            <app-demographics [population]="p" [spending]="s" [isReal]="isReal()" />
+          </section>
+        }
+      } @else {
+        <section class="section" aria-labelledby="spending-heading">
+          <h3 id="spending-heading">Where the money goes</h3>
+          <app-budget-breakdown [summary]="s" kind="spending" [isReal]="isReal()" />
+        </section>
+      }
     }
   }
 }

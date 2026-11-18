@@ -6,13 +6,13 @@ Live version of this doc: https://claude.ai/artifact/2LZe1n7yDJTr4KZJmAimUw
 
 ## Vision and scope
 
-A civic dashboard for Mississauga answering three questions from the point of view of someone who actually lives here: where does my money go, what is my city doing that affects me, and who's making those decisions.
+A civic dashboard for Mississauga: what the city spends, what it owes, who lives here, what it costs to live here, and who makes the decisions. Rescoped on 2026-11-17 from three resident questions to the ten sections below — the original three (money, activity, who decides) are now three sections among them.
 
 Built as a portfolio/GitHub project after shelving an earlier neighborhood tool-sharing concept (abandoned because the founder didn't know his neighbors and couldn't seed the trust model it required). Key differences this time:
 
 - No platform, no network effect needed. This part stands, and it is what keeps the project finishable: no accounts, no user-generated content, nobody to recruit — a static site over public data. What was dropped on 2026-11-17 is the single-user rationale, not this.
 - Real, already-public data, not scraped or sensitive — pulled from the City of Mississauga's open data catalogue and published budget/council documents.
-- City-centric, with drill-down to a single ward. Reversed on 2026-11-17: ward-only stopped making sense, and the "useful to exactly one person on day one" framing went with it. Mississauga-wide is the default view; a ward selector narrows the screens to one ward.
+- City-centric. Reversed on 2026-11-17: ward-only stopped making sense, and the "useful to exactly one person on day one" framing went with it. Ward drill-down was demoted the same day — debt, reserves, census income brackets, school enrolment and CPI are not published per ward, so a ward filter only ever applied to development applications and your own councillor. A filter on two sections out of eight, not the backbone.
 - Doubles as a genuine personal utility (actually useful to know this) and a resume-worthy technical project (data ingestion from open data APIs/PDFs, a real dashboard UI — not just CRUD).
 
 ## Anchor facts
@@ -32,9 +32,9 @@ An address → ward lookup was originally planned here as the first technical pi
 
 - **Visual first — a dashboard, not a document** (standing decision, 2026-11-17). The audience is an average resident. Each screen leads with something visual — maps, charts, stat tiles, hero numbers, colour and clear hierarchy — with lists and text as supporting detail. Things cannot look dull. Visuals still follow honest data-viz rules: no misleading charts, accessible colours, a table view behind every chart.
 - **No footnotes — easy to read is the whole point** (standing decision, 2026-11-17). A resident should understand a screen without reading notes at the bottom. Explanations go where the eye already is: in labels ("Property taxes (City's share)"), short qualifiers in headings ("cash only"), or in the visual itself (a money-in vs money-out bar instead of a paragraph about surpluses). Nuance that truly doesn't fit goes in a small on-demand ⓘ info tip, used sparingly — never a notes list. Source attribution at the bottom is fine.
-- **City first, then drill down to a ward** (standing decision, 2026-11-17, replacing "v1 is one ward only"). Mississauga as a whole is the default view; a ward selector in the header narrows the screens to one ward and is remembered across them. This reverses the earlier ward-only scope, and with it the premise that the dashboard only had to be useful to one person. The no-platform constraints are unaffected: still no accounts, still a static site over public open data. Where a dataset has no ward dimension (the budget), the city-wide view stands and the selector doesn't pretend otherwise.
+- **City first; a ward is a filter, not the backbone** (standing decision, 2026-11-17, replacing "v1 is one ward only"; drill-down demoted the same day). Mississauga as a whole is the view. This reverses the earlier ward-only scope, and with it the premise that the dashboard only had to be useful to one person. The no-platform constraints are unaffected: still no accounts, still a static site over public open data. Almost nothing is published per ward — not debt, reserves, census income brackets, school enrolment or CPI — so a ward filter only ever applies to development applications and your own councillor: build it where the data supports it and nowhere else.
 
-## v1 scope — the three pillars
+## Scope — eight sections, three built
 
 1. **Who's deciding** — all 11 councillors and how to reach them, from the ward boundaries dataset; narrowing to a ward shows just that ward's councillor. Committees aren't in any dataset yet.
 2. **Where my money goes** — Mississauga's budget broken down by service area (fire, roads, library, etc.), pulled from the published budget data and shown as a simple visual instead of the dense multi-hundred-page PDF. Stretch: apply the city-wide percentages against the user's own roll number/assessed value for a personalized dollar breakdown, not just the city-wide average.
@@ -45,6 +45,41 @@ An address → ward lookup was originally planned here as the first technical pi
 - Spending broken down by ward — the city publishes operating results by service function, not by ward, so the budget screen stays city-wide even when a ward is selected
 - Live/real-time council vote tracking (agenda items and by-laws update continuously; v1 treats this as a periodic pull, not a live feed)
 - Any account login, personal tax bill lookup requiring authentication, or anything beyond public open data + a manually entered roll number/value
+
+### The eight sections
+
+Rescoped 2026-11-17. "At a glance" becomes the landing page — one headline number per section — not a nav item. The three built screens become three sections of eight.
+
+| Section | What it answers | Main source | State |
+| --- | --- | --- | --- |
+| At a glance | The city in one screen | the sections below | Not started |
+| Budget | Income and spending by service | Consolidated Statement of Operations CSV | Built |
+| Debt and reserves | What the city owes and has put aside | Ontario FIR, Sch. 53 / 60 / 61 | Next |
+| Demographics | Age, gender, income brackets, growth | StatCan Census Profile WDS | Population only |
+| Cost of living | What it costs here, and how that compares | StatCan CPI, Toronto CMA | Inflation switch only |
+| Housing | Homes, prices, rent vs buy, supply, development | CMHC rental survey; development applications | Applications only |
+| Education | Funding, spending, students | Ontario public schools enrolment (OnSIS) | Not started |
+| Who decides | Mayor, councillors, staff: pay, funders, votes | Ward boundaries; s.284 reports; eSCRIBE minutes | Councillors only |
+| Elections | Turnout, votes per seat, candidates | City certified results | Not started |
+| Council meetings | Agendas and decisions | eSCRIBE | Agendas built |
+
+The three weakest data points are average home price (TRREB and CREA are licensed, MPAC is not public in bulk), cost of living (no Mississauga CPI exists — only Toronto CMA, which contains it) and anything resembling an official's net worth (no such disclosure exists in Ontario). None of them gates a section.
+
+### Sources for the wider scope (checked 2026-11-17)
+
+Found by search, not yet fetched, so formats are as advertised rather than as proven.
+
+| What | Source | Format | Note |
+| --- | --- | --- | --- |
+| Net debt, reserves, all Ontario municipalities | [Financial Information Return](https://data2.ontario.ca/dataset/financial-information-return-fir-for-municipalities) (Municipal Act s.294) | CSV / XLSX by year, 1977–current | Sch. 53 net debt, Sch. 60/61 reserves; peer comparison comes free |
+| Age, gender, income brackets | [Census Profile web data service](https://www12.statcan.gc.ca/wds-sdw/2021profile-profil2021-eng.cfm) | SDMX REST: JSON/XML/CSV | 2021 is current; 2026 results ≈ early 2027. Mississauga geography code still to look up |
+| Students by board | [Ontario public schools enrolment](https://data.ontario.ca/en/dataset/ontario-public-schools-enrolment) (OnSIS) | CSV, yearly | Peel DSB = B66125. Education is provincial/board, not city — the section must say so |
+| Rent and vacancy | [CMHC HMIP](https://www03.cmhc-schl.gc.ca/hmip-pimh/en/Help) | CSV export | Behind a licence agreement; read redistribution terms before committing data |
+| Council pay and expenses | [Elected Official Remuneration and Expenses](https://www.mississauga.ca/?p=1426) (s.284) | PDF, 2011–2025 + quarterly | Excludes Region of Peel pay |
+| 2026 election results | [Official certified results](https://www.mississauga.ca/wp-content/uploads/sites/12/2026/10/28153013/2026-Official-Certified-Results-Summary-Report.pdf) | PDF | Turnout and per-candidate votes by ward |
+| Declared conflicts | [MCIA](https://www.ontario.ca/laws/statute/90m50) registry, held by the Clerk | Public inspection | No API; may be request-only |
+
+**The 2026 election changed the council.** Polls were 2026-10-26, term began 2026-11-15. Alvin Tedjo is mayor on 74,479 votes (38.9%), ahead of Carolyn Parrish and Bonnie Crombie; Dipika Damerla, whose campaign dashboard is in `related-work.md`, came fourth on 6.1%. Brad Butt held Ward 11 on 10,099 votes (62.15%). The 2026-11-17 ward pull already carries the new council, so the councillor screen is current — but the mayor is in no ward dataset and is missing from "who decides".
 
 ## Data sources
 
@@ -99,6 +134,16 @@ Repo name settled: `civic-dashboard`. A friendlier project/display name is still
 7. ~~First screen.~~ Done — "Who's deciding" councillor card at `/councillor`, read from `wards.geojson`. Committees aren't in any dataset yet.
 8. ~~Budget screen.~~ Done — "Where my money goes" at `/budget`: a donut of 2025 spending by service (total in the centre; requested pie, built as a donut so the centre holds the total), a "39¢ of every dollar goes to transportation" headline, stat tiles, ranked bars coloured to match the donut with 2012–2025 sparklines, hover linking donut and list, categories under 0.5% folded into "Other", full year-by-year table. Service colours are fixed per service (`categoryColor`), not by rank. Dollar changes shown alongside percentages, with an "Actual dollars / Adjusted for inflation" switch (Toronto CPI, `adjustForInflation`), defaulting to adjusted. All changes are vs the previous year (`compareYear`), not a fixed start year — 2012 was just where the data begins and the chosen start year changed the story wildly; the long view lives in the 2012–2025 trend lines. A second "Where the money comes from" section uses the same breakdown component (`BudgetBreakdown`) for revenue: 15 revenue lines grouped into 6 plain-language sources (`REVENUE_GROUPS`, which also bridge the 2022 payments-in-lieu split and the 2024 development-contribution reclassification), non-cash revenue (contributed assets, one-time gains) excluded — flagged as "cash only" with an ⓘ — and a money-in vs money-out bar at the top showing the difference as "left over for new roads, buildings and savings". No footnotes.
 9. ~~Address → ward lookup.~~ Dropped — replaced by a Ward 11 map on the "What's happening" screen.
-10. Per-resident view on the budget screen — population data is pulled (`public/data/population.json`), not yet shown.
+10. ~~Per-resident view on the budget screen.~~ Done — a third "Demographics" tab on the budget screen, built on `public/data/population.json` (StatCan 17-10-0155-01, 2001–2025): population headline (the 2025 estimate fell 2.1%), tiles for the year-on-year and since-2001 change and city spending per resident ($1,666 in 2025), a line chart each for population and per-resident dollars (different scales, so never one chart with two axes), and a year-by-year table behind them. Tabs are data-driven — `sides()` in `budget.ts` — so a panel only appears when its data does.
 11. Open: by-laws (no feed found), committees the councillor sits on (not in any dataset), and what the city means by the "Withheld" application status.
-12. Go city-centric with a ward selector (decided 2026-11-17). Smaller than it sounds: `wards.geojson` already holds all 11 wards and councillors (`where: '1=1'`), and the budget, revenue, CPI, population and meetings data was never ward-scoped. Four changes: `WARD = '11'` in `core/ward.ts` becomes a selected-ward signal with an "All of Mississauga" default; `where: Ward=11` in `scripts/fetch-data.mts` becomes `1=1` for development applications, keeping the `Ward` field for client-side filtering; the councillor screen lists all 11 and narrows to one; "Ward 11" comes out of the page titles and the header.
+12. ~~Go city-centric with a ward selector.~~ Partly done, partly dropped (2026-11-17). Done: "Ward 11" is out of the page titles, the header and the nav, and the app reads as a city dashboard. Dropped: the ward selector itself, when the rescope showed almost no dataset has a ward dimension. `WARD = '11'` still sits in `core/ward.ts` and `where: Ward=${WARD}` still filters development applications in `scripts/fetch-data.mts` — both only matter to the two sections that genuinely have a ward, so they stay until those sections are rebuilt.
+13. Rescoped to ten sections (2026-11-17) — see "The eight sections" above. Order from here, chosen so each step leaves something finished:
+    1. **Debt and reserves from the FIR**, first because it covers every Ontario municipality: it delivers what the city owes and holds *and* establishes the peer-comparison pattern that cost of living and housing reuse later.
+    2. Add the mayor to "who decides" — he is in no ward dataset, and the office changed hands on 2026-11-15.
+    3. Census demographics (age, gender, income brackets), replacing the population-only tab.
+    4. The at-a-glance landing page, once enough real headline numbers exist to fill it honestly.
+    5. Elections from the certified 2026 results, then council pay and funders, then voting records from the minutes.
+    6. Housing and cost of living last: weakest data, and the licence terms need reading first.
+14. Confirm the CMHC licence allows republishing rent figures in a public repo before committing any of it.
+15. Find where campaign financial statements are published, or whether they are request-only from the Clerk.
+16. Decide what "background" means for an official, given it has to come from their own published biography or the city's, not from a characterisation.

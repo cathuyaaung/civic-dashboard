@@ -53,6 +53,58 @@
   }
 }
 
+/* The two sides of the budget as tabs, the active one underlined in the accent. */
+.tablist {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  button {
+    padding: 0.625rem 0.875rem;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 1.125rem;
+    white-space: nowrap;
+    cursor: pointer;
+
+    &[aria-selected='true'] {
+      border-bottom-color: var(--accent);
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    &:hover:not([aria-selected='true']) {
+      color: var(--text);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: -2px;
+    }
+  }
+}
+
+.panel {
+  margin-bottom: 3rem;
+}
+
+@media (max-width: 560px) {
+  .tablist button {
+    padding: 0.5rem 0.625rem;
+    font-size: 1rem;
+  }
+}
+
 /* Money in vs money out: two bars on one scale, the difference drawn as a dashed segment. */
 .flow {
   margin-bottom: 2.5rem;

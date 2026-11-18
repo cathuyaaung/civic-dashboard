@@ -28,3 +28,26 @@ export function signedPercent(fraction: number | null): string {
   const pct = Math.round(fraction * 100);
   return pct > 0 ? `+${pct}%` : pct < 0 ? `−${Math.abs(pct)}%` : '0%';
 }
+
+const wholeNumber = new Intl.NumberFormat('en-CA', { maximumFractionDigits: 0 });
+
+const exactDollars = new Intl.NumberFormat('en-CA', {
+  style: 'currency',
+  currency: 'CAD',
+  currencyDisplay: 'narrowSymbol',
+  maximumFractionDigits: 0,
+});
+
+/** 764,597 — for counts of things, where compact notation would hide detail. */
+export const count = (n: number): string => wholeNumber.format(n);
+
+/** +16,707, −16,707 (true minus sign), 0, or – when unknown. */
+export function signedCount(n: number | null): string {
+  if (n === null || !Number.isFinite(n)) return '–';
+  const rounded = Math.round(n);
+  if (rounded === 0) return '0';
+  return `${rounded > 0 ? '+' : '−'}${wholeNumber.format(Math.abs(rounded))}`;
+}
+
+/** $1,666 — exact dollars, for per-person amounts that compact notation ruins. */
+export const dollars = (n: number): string => exactDollars.format(n);

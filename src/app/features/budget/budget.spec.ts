@@ -3,6 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ApplicationRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { BudgetData, CpiData } from '../../core/budget';
+import { PopulationData } from '../../core/population';
 import { Budget } from './budget';
 
 const row = (line: string, actual: number[]) => ({
@@ -24,12 +25,34 @@ const data: BudgetData = {
   ],
 };
 
+const population: PopulationData = {
+  geography: 'Mississauga (CY), Ontario',
+  series: 'Population estimates, July 1',
+  table: '17-10-0155-01',
+  values: { '2012': 700_000, '2024': 781_304, '2025': 764_597 },
+};
+
 // Prices up 50% from 2012 to 2025.
 const cpi: CpiData = {
   geography: 'Toronto, Ontario',
   series: 'CPI',
   table: '18-10-0005-01',
   values: { '2012': 100, '2025': 150 },
+};
+
+const withRevenueData: BudgetData = {
+  ...data,
+  rows: [
+    ...data.rows,
+    { section: 'Revenues', line: 'Property taxes', actual: [374_304, 755_065], budget: [] },
+    { section: 'Revenues', line: 'User charges', actual: [171_957, 301_200], budget: [] },
+    {
+      section: 'Revenues',
+      line: 'Contributed and assumed assets',
+      actual: [30_873, 33_956],
+      budget: [],
+    },
+  ],
 };
 
 describe('Budget', () => {
@@ -58,6 +81,7 @@ describe('Budget', () => {
       h.expectOne('data/budget.json').flush(data);
       h.expectOne('data/cpi.json').flush(cpi);
       h.expectOne('data/meta.json').flush({ ward: 11, sources: {} });
+      h.expectOne('data/population.json').flush(population);
     });
 
     // Donut: one slice per ranked row, total in the centre.
@@ -87,6 +111,7 @@ describe('Budget', () => {
       h.expectOne('data/budget.json').flush(data);
       h.expectOne('data/cpi.json').flush(cpi);
       h.expectOne('data/meta.json').flush({ ward: 11, sources: {} });
+      h.expectOne('data/population.json').flush(population);
     });
 
     el.querySelectorAll('ol li')[1].dispatchEvent(new Event('pointerenter'));
@@ -102,6 +127,7 @@ describe('Budget', () => {
       h.expectOne('data/budget.json').flush(data);
       h.expectOne('data/cpi.json').flush(cpi);
       h.expectOne('data/meta.json').flush({ ward: 11, sources: {} });
+      h.expectOne('data/population.json').flush(population);
     });
 
     const [actual, real] = el.querySelectorAll<HTMLButtonElement>('.segmented button');
@@ -122,29 +148,63 @@ describe('Budget', () => {
     expect(el.querySelector('caption')?.textContent).toContain('as recorded');
   });
 
-  it('shows where the money comes from when revenue lines exist', async () => {
-    const withRevenue: BudgetData = {
-      ...data,
-      rows: [
-        ...data.rows,
-        { section: 'Revenues', line: 'Property taxes', actual: [374_304, 755_065], budget: [] },
-        { section: 'Revenues', line: 'User charges', actual: [171_957, 301_200], budget: [] },
-        {
-          section: 'Revenues',
-          line: 'Contributed and assumed assets',
-          actual: [30_873, 33_956],
-          budget: [],
-        },
-      ],
-    };
+  it('shows the two sides as tabs, spending first', async () => {
     const el = await render((h) => {
-      h.expectOne('data/budget.json').flush(withRevenue);
+      h.expectOne('data/budget.json').flush(withRevenueData);
       h.expectOne('data/cpi.json').flush(cpi);
       h.expectOne('data/meta.json').flush({ ward: 11, sources: {} });
+      h.expectOne('data/population.json').flush(population);
     });
 
+    const tabs = el.querySelectorAll<HTMLButtonElement>('[role="tab"]');
+    const [spending, revenue, demographics] = tabs;
+    expect([...tabs].map((t) => t.textContent?.trim())).toEqual([
+      'Where the money goes',
+      'Where the money comes from',
+      'Demographics',
+    ]);
+
+    // Spending leads, and only the selected panel is rendered.
+    expect(spending.getAttribute('aria-selected')).toBe('true');
+    expect(el.querySelector('#spending-panel')).not.toBeNull();
+    expect(el.querySelector('#revenue-panel')).toBeNull();
+
+    revenue.click();
+    await TestBed.inject(ApplicationRef).whenStable();
+
+    expect(revenue.getAttribute('aria-selected')).toBe('true');
+    expect(spending.getAttribute('aria-selected')).toBe('false');
+    expect(el.querySelector('#spending-panel')).toBeNull();
+    expect(el.querySelector('#revenue-panel')).not.toBeNull();
+
+    // Arrow keys move between tabs.
+    revenue.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    await TestBed.inject(ApplicationRef).whenStable();
+
+    expect(demographics.getAttribute('aria-selected')).toBe('true');
+    expect(el.querySelector('#demographics-panel')).not.toBeNull();
+
+    // ...and wrap around the ends.
+    demographics.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    await TestBed.inject(ApplicationRef).whenStable();
+
+    expect(spending.getAttribute('aria-selected')).toBe('true');
+    expect(el.querySelector('#spending-panel')).not.toBeNull();
+  });
+
+  it('shows where the money comes from when revenue lines exist', async () => {
+    const el = await render((h) => {
+      h.expectOne('data/budget.json').flush(withRevenueData);
+      h.expectOne('data/cpi.json').flush(cpi);
+      h.expectOne('data/meta.json').flush({ ward: 11, sources: {} });
+      h.expectOne('data/population.json').flush(population);
+    });
+
+    // The revenue side lives behind its tab.
+    el.querySelectorAll<HTMLButtonElement>('[role="tab"]')[1].click();
+    await TestBed.inject(ApplicationRef).whenStable();
+
     const revenue = el.querySelector('[aria-labelledby="revenue-heading"]')!;
-    expect(revenue.querySelector('h3')?.textContent).toBe('Where the money comes from');
     // Explanations live in labels, not footnotes.
     expect(revenue.querySelector('.big-sub')?.textContent?.trim()).toBe(
       "comes from property taxes (city's share)",
@@ -174,13 +234,20 @@ describe('Budget', () => {
     );
   });
 
-  it('omits the revenue section when there are no revenue lines', async () => {
+  it('drops the tabs when there is only one panel to show', async () => {
     const el = await render((h) => {
       h.expectOne('data/budget.json').flush(data);
       h.expectOne('data/cpi.json').flush(cpi);
       h.expectOne('data/meta.json').flush({ ward: 11, sources: {} });
+      // No revenue lines and no population estimates: spending is all there is.
+      h.expectOne('data/population.json').flush({ ...population, values: {} });
     });
     expect(el.querySelector('[aria-labelledby="revenue-heading"]')).toBeNull();
+    // One side only: a heading, not a tab list.
+    expect(el.querySelector('[role="tablist"]')).toBeNull();
+    expect(el.querySelector('[aria-labelledby="spending-heading"] h3')?.textContent).toBe(
+      'Where the money goes',
+    );
   });
 
   it('hides the inflation switch when the price index is unavailable', async () => {
@@ -188,6 +255,7 @@ describe('Budget', () => {
       h.expectOne('data/budget.json').flush(data);
       h.expectOne('data/cpi.json').flush('', { status: 404, statusText: 'Not Found' });
       h.expectOne('data/meta.json').flush({ ward: 11, sources: {} });
+      h.expectOne('data/population.json').flush(population);
     });
     expect(el.querySelector('.segmented')).toBeNull();
     expect(el.querySelector('ol .change-pct')?.textContent?.trim()).toBe('+81%');
@@ -198,6 +266,7 @@ describe('Budget', () => {
       h.expectOne('data/budget.json').flush('', { status: 404, statusText: 'Not Found' });
       h.expectOne('data/cpi.json').flush('', { status: 404, statusText: 'Not Found' });
       h.expectOne('data/meta.json').flush('', { status: 404, statusText: 'Not Found' });
+      h.expectOne('data/population.json').flush('', { status: 404, statusText: 'Not Found' });
     });
 
     expect(el.querySelector('.error')?.textContent).toContain('npm run data');

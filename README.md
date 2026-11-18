@@ -1,12 +1,13 @@
 # Civic Dashboard
 
-A civic dashboard for Mississauga — answering three questions for a resident:
+A civic dashboard for Mississauga: what the city spends, what it owes, who lives here, what it costs to live here, and who makes the decisions.
 
-- **Who's deciding** — councillors and ward info
-- **Where my money goes** — city budget, by service area
-- **What's happening** — council agenda items, by-laws, development applications
+Ten sections, three of them built so far:
 
-The city as a whole is the default view, with drill-down to a single ward.
+- **Budget** — income and spending by service area *(built)*
+- **Demographics** — population, with age, gender and income brackets to come *(partly built)*
+- **What's happening** — council agenda items and development applications *(built)*
+- **Debt and reserves**, **cost of living**, **housing**, **education**, **who decides**, **elections**, and an **at-a-glance** landing page *(planned)*
 
 Built as a portfolio project: no accounts, no backend database initially, just public open data surfaced clearly.
 
